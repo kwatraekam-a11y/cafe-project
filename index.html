@@ -1,0 +1,2662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bhookemon — Tame Your Hunger Monster!</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fredoka (Playful Cartoonish Display) & Plus Jakarta Sans (Elegant Body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            cream: '#FFFDF7',
+            creamDark: '#F6F1E3',
+            charcoal: '#1E1B18',
+            charcoalLight: '#332E29',
+            saffron: '#FF6B2B',
+            saffronDark: '#E55314',
+            mustard: '#FFB800',
+            sage: '#2E7D32',
+            berry: '#D9383A',
+          },
+          fontFamily: {
+            display: ['Fredoka', 'cursive', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          boxShadow: {
+            monster: '0 8px 0 #1E1B18',
+            monsterSm: '0 4px 0 #1E1B18',
+            monsterHover: '0 11px 0 #1E1B18',
+            soft: '0 20px 40px -15px rgba(30, 27, 24, 0.08)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Custom Cartoonish-Elegant Micro-Interactions & Animations */
+    body {
+      background-color: #FFFDF7;
+      color: #1E1B18;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+      background-image: radial-gradient(#E8DFC8 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    h1, h2, h3, .font-display {
+      font-family: 'Fredoka', sans-serif;
+      letter-spacing: 0.01em;
+    }
+
+    /* Tactile Neo-Brutalist Cartoon Button */
+    .btn-monster {
+      border: 2.5px solid #1E1B18;
+      box-shadow: 0 5px 0 #1E1B18;
+      transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.15s ease, background-color 0.2s ease;
+    }
+    .btn-monster:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 0 #1E1B18;
+    }
+    .btn-monster:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #1E1B18;
+    }
+
+    .card-monster {
+      border: 2.5px solid #1E1B18;
+      box-shadow: 0 6px 0 #1E1B18;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+    }
+    .card-monster:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 0 #1E1B18;
+    }
+
+    /* Mascot Floating & Blinking Animations */
+    @keyframes floatBob {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1.5deg); }
+    }
+    .animate-float {
+      animation: floatBob 3.6s ease-in-out infinite;
+    }
+
+    @keyframes chomp {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(0.86); }
+    }
+    .animate-chomp {
+      transform-origin: center;
+      animation: chomp 1.8s ease-in-out infinite;
+    }
+
+    @keyframes popIn {
+      0% { opacity: 0; transform: scale(0.92) translateY(12px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .page-enter {
+      animation: popIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+
+    @keyframes badgeBounce {
+      0%, 100% { transform: scale(1); }
+      40% { transform: scale(1.35); }
+      70% { transform: scale(0.9); }
+    }
+    .badge-pop {
+      animation: badgeBounce 0.4s ease;
+    }
+
+    /* 3D Credit Card Flip for Payment Gateway */
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .card-inner.is-flipped {
+      transform: rotateY(180deg);
+    }
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 1.25rem;
+    }
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFFDF7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D6CCB8;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FF6B2B;
+    }
+
+    /* Hide scrollbar for category pills */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Print Receipt Styling */
+    @media print {
+      body * { visibility: hidden; }
+      #printable-receipt, #printable-receipt * { visibility: visible; }
+      #printable-receipt {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        box-shadow: none !important;
+        border: 1px solid #000 !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-mustard selection:text-charcoal">
+
+  <!-- ==================== TOP ANNOUNCEMENT RIBBON ==================== -->
+  <div class="bg-charcoal text-cream text-xs sm:text-sm py-2 px-4 text-center font-medium border-b-2 border-charcoal relative z-40">
+    <span class="inline-flex items-center gap-2">
+      <span class="bg-saffron text-white text-[11px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Hungry?</span>
+      <span>Free Monster Fries on orders above ₹499! Use code <button onclick="copyPromoCode('BHOOK100')" class="underline decoration-mustard decoration-2 font-bold text-mustard hover:text-white transition">BHOOK100</button> for ₹100 OFF.</span>
+    </span>
+  </div>
+
+  <!-- ==================== STICKY NAVIGATION HEADER ==================== -->
+  <header class="sticky top-0 z-30 bg-cream/95 backdrop-blur-md border-b-2 border-charcoal">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo + Mini Mascot -->
+      <button onclick="navigateTo('home')" class="flex items-center gap-3 group text-left focus:outline-none">
+        <div class="w-12 h-12 rounded-2xl bg-saffron border-2 border-charcoal shadow-monsterSm flex items-center justify-center group-hover:rotate-6 transition-transform">
+          <!-- Mini Bhookemon Face SVG -->
+          <svg viewBox="0 0 80 80" class="w-10 h-10">
+            <!-- Little Horns -->
+            <path d="M18 24 L10 8 L28 16 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <path d="M62 24 L70 8 L52 16 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <!-- Monster Head -->
+            <rect x="14" y="16" width="52" height="48" rx="22" fill="#FF6B2B" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Big Googly-Cute Eyes -->
+            <circle cx="30" cy="34" r="7.5" fill="#FFFDF7" stroke="#1E1B18" stroke-width="3"/>
+            <circle cx="31.5" cy="34" r="3.5" fill="#1E1B18"/>
+            <circle cx="33" cy="32.5" r="1.2" fill="#FFF"/>
+            <circle cx="50" cy="34" r="7.5" fill="#FFFDF7" stroke="#1E1B18" stroke-width="3"/>
+            <circle cx="48.5" cy="34" r="3.5" fill="#1E1B18"/>
+            <circle cx="50" cy="32.5" r="1.2" fill="#FFF"/>
+            <!-- Happy Chomp Mouth with Fangs -->
+            <path d="M25 47 Q40 60 55 47 Z" fill="#1E1B18"/>
+            <path d="M29 47 L32 52 L35 47 Z" fill="#FFFDF7"/>
+            <path d="M45 47 L48 52 L51 47 Z" fill="#FFFDF7"/>
+            <ellipse cx="40" cy="53" rx="6" ry="3" fill="#FF4D6D"/>
+          </svg>
+        </div>
+        <div>
+          <span class="font-display text-2xl sm:text-3xl font-bold tracking-tight text-charcoal block leading-none">
+            Bhooke<span class="text-saffron">mon</span>
+          </span>
+          <span class="text-[11px] font-semibold uppercase tracking-widest text-charcoal/60 hidden sm:block">Gourmet Monster Kitchen</span>
+        </div>
+      </button>
+
+      <!-- Desktop Navigation Tabs -->
+      <nav class="hidden md:flex items-center gap-2 bg-creamDark/80 p-1.5 rounded-2xl border-2 border-charcoal/15">
+        <button data-nav="home" onclick="navigateTo('home')" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm transition-all">Home</button>
+        <button data-nav="menu" onclick="navigateTo('menu')" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm transition-all">Menu</button>
+        <button data-nav="deals" onclick="navigateTo('deals')" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-1.5">
+          <span>Deals & Combos</span>
+          <span class="bg-mustard text-charcoal text-[10px] font-extrabold px-1.5 py-0.5 rounded-md border border-charcoal">HOT</span>
+        </button>
+        <button data-nav="checkout" onclick="navigateTo('checkout')" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm transition-all">Checkout</button>
+        <button data-nav="track" onclick="navigateTo('track')" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-1.5">
+          <span>Track Order</span>
+          <span id="nav-active-dot" class="hidden w-2 h-2 rounded-full bg-sage animate-ping"></span>
+        </button>
+      </nav>
+
+      <!-- Right Actions: Cart Drawer Trigger & Mobile Menu -->
+      <div class="flex items-center gap-3">
+        <button onclick="toggleCartDrawer(true)" class="btn-monster bg-mustard hover:bg-amber-400 text-charcoal px-4 py-2.5 rounded-2xl font-display font-bold text-sm sm:text-base flex items-center gap-2.5 cursor-pointer">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span class="hidden sm:inline">Basket</span>
+          <span id="header-cart-count" class="bg-charcoal text-cream text-xs font-extrabold px-2 py-0.5 rounded-full min-w-[24px] text-center">0</span>
+        </button>
+
+        <!-- Mobile Hamburger -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2.5 rounded-xl border-2 border-charcoal bg-white text-charcoal" aria-label="Toggle navigation">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Dropdown -->
+    <div id="mobile-nav" class="hidden md:hidden bg-cream border-t-2 border-charcoal px-4 py-4 space-y-2">
+      <button data-nav="home" onclick="navigateTo('home'); toggleMobileMenu()" class="nav-tab w-full text-left px-4 py-3 rounded-xl font-bold text-base block">🏠 Home</button>
+      <button data-nav="menu" onclick="navigateTo('menu'); toggleMobileMenu()" class="nav-tab w-full text-left px-4 py-3 rounded-xl font-bold text-base block">🍔 Explore Menu</button>
+      <button data-nav="deals" onclick="navigateTo('deals'); toggleMobileMenu()" class="nav-tab w-full text-left px-4 py-3 rounded-xl font-bold text-base block">🔥 Deals & Monster Combos</button>
+      <button data-nav="checkout" onclick="navigateTo('checkout'); toggleMobileMenu()" class="nav-tab w-full text-left px-4 py-3 rounded-xl font-bold text-base block">💳 Checkout & Pay</button>
+      <button data-nav="track" onclick="navigateTo('track'); toggleMobileMenu()" class="nav-tab w-full text-left px-4 py-3 rounded-xl font-bold text-base block">🛵 Track Live Order</button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN SPA VIEWPORT ==================== -->
+  <main id="app-root" class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <!-- Dynamic Multi-Page Content Rendered Here -->
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-charcoal text-cream border-t-4 border-saffron mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="space-y-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-saffron flex items-center justify-center font-display font-bold text-xl text-charcoal border-2 border-cream">B</div>
+          <span class="font-display text-2xl font-bold">Bhookemon</span>
+        </div>
+        <p class="text-cream/75 text-sm leading-relaxed">
+          Crafted with gourmet passion and a mischievous appetite. We tame your wildest midnight and midday cravings in 30 minutes flat.
+        </p>
+        <div class="flex gap-2">
+          <span class="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-mustard">FSSAI Certified</span>
+          <span class="px-3 py-1 rounded-full bg-white/10 text-xs font-semibold text-emerald-400">100% Fresh</span>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="font-display text-lg font-bold text-mustard mb-3">Quick Links</h4>
+        <ul class="space-y-2 text-sm text-cream/80">
+          <li><button onclick="navigateTo('home')" class="hover:text-saffron transition">Home</button></li>
+          <li><button onclick="navigateTo('menu')" class="hover:text-saffron transition">Full Gourmet Menu</button></li>
+          <li><button onclick="navigateTo('deals')" class="hover:text-saffron transition">Squad Deals & Combos</button></li>
+          <li><button onclick="navigateTo('track')" class="hover:text-saffron transition">Live Order Tracker</button></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display text-lg font-bold text-mustard mb-3">Monster Kitchens</h4>
+        <ul class="space-y-2 text-sm text-cream/80">
+          <li>📍 Indiranagar & Koramangala, Bengaluru</li>
+          <li>📍 Bandra West & Powai, Mumbai</li>
+          <li>📍 Cyber Hub, Gurugram & Hauz Khas, Delhi</li>
+          <li>⏰ Open Daily: 11:00 AM – 2:00 AM</li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-display text-lg font-bold text-mustard mb-3">Active Promo Codes</h4>
+        <div class="space-y-2.5">
+          <div onclick="copyPromoCode('BHOOK100')" class="cursor-pointer bg-white/10 hover:bg-white/15 border border-dashed border-mustard/60 rounded-xl p-2.5 flex items-center justify-between transition">
+            <div>
+              <span class="font-display font-bold text-mustard text-sm block">BHOOK100</span>
+              <span class="text-[11px] text-cream/70">Flat ₹100 OFF above ₹499</span>
+            </div>
+            <span class="text-xs bg-mustard text-charcoal font-bold px-2 py-1 rounded-lg">Copy</span>
+          </div>
+          <div onclick="copyPromoCode('MONSTER20')" class="cursor-pointer bg-white/10 hover:bg-white/15 border border-dashed border-saffron/60 rounded-xl p-2.5 flex items-center justify-between transition">
+            <div>
+              <span class="font-display font-bold text-saffron text-sm block">MONSTER20</span>
+              <span class="text-[11px] text-cream/70">20% OFF up to ₹180</span>
+            </div>
+            <span class="text-xs bg-saffron text-white font-bold px-2 py-1 rounded-lg">Copy</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="border-t border-white/10 py-5 text-center text-xs text-cream/50">
+      © 2026 Bhookemon Culinary Labs Pvt. Ltd. • Made for Hungry Humans & Friendly Monsters.
+    </div>
+  </footer>
+
+  <!-- ==================== SLIDE-OVER CART BASKET DRAWER ==================== -->
+  <div id="cart-drawer-backdrop" onclick="toggleCartDrawer(false)" class="fixed inset-0 bg-charcoal/60 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed top-0 right-0 h-full w-full max-w-md bg-cream border-l-4 border-charcoal z-50 transform translate-x-full transition-transform duration-300 flex flex-col">
+    <!-- Drawer Header -->
+    <div class="p-5 bg-mustard border-b-2 border-charcoal flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="text-2xl">🧺</span>
+        <div>
+          <h3 class="font-display text-xl font-bold text-charcoal leading-none">Your Monster Basket</h3>
+          <p id="drawer-subtitle" class="text-xs font-semibold text-charcoal/80 mt-0.5">Feed Bhookemon before he gets hangry!</p>
+        </div>
+      </div>
+      <button onclick="toggleCartDrawer(false)" class="w-9 h-9 rounded-xl bg-cream border-2 border-charcoal flex items-center justify-center font-bold hover:bg-saffron hover:text-white transition">✕</button>
+    </div>
+
+    <!-- Free Delivery Progress Bar -->
+    <div class="bg-creamDark px-5 py-3 border-b border-charcoal/15">
+      <div class="flex justify-between text-xs font-bold mb-1.5">
+        <span id="free-delivery-text">Add ₹499 more for FREE Delivery!</span>
+        <span id="free-delivery-pct" class="text-saffron">0%</span>
+      </div>
+      <div class="w-full h-2.5 bg-white rounded-full border border-charcoal/30 overflow-hidden">
+        <div id="free-delivery-bar" class="h-full bg-sage transition-all duration-300" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Cart Items List -->
+    <div id="drawer-items-container" class="flex-grow overflow-y-auto p-5 space-y-3">
+      <!-- Populated dynamically -->
+    </div>
+
+    <!-- Drawer Footer -->
+    <div id="drawer-footer" class="p-5 bg-white border-t-2 border-charcoal space-y-3">
+      <div class="flex justify-between items-center text-sm">
+        <span class="text-charcoal/70 font-medium">Item Subtotal</span>
+        <span id="drawer-subtotal" class="font-bold text-lg text-charcoal">₹0</span>
+      </div>
+      <button onclick="toggleCartDrawer(false); navigateTo('checkout')" class="btn-monster w-full py-3.5 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display font-bold text-lg flex items-center justify-center gap-2">
+        <span>Proceed to Checkout</span>
+        <span>→</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==================== ITEM CUSTOMIZATION MODAL ==================== -->
+  <div id="customize-modal" class="fixed inset-0 bg-charcoal/65 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-cream border-3 border-charcoal rounded-3xl max-w-lg w-full shadow-monster overflow-hidden page-enter">
+      <div id="customize-modal-content">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIMULATED PAYMENT GATEWAY MODAL ==================== -->
+  <div id="payment-gateway-modal" class="fixed inset-0 bg-charcoal/75 backdrop-blur-sm z-50 hidden items-center justify-center p-3 sm:p-5 overflow-y-auto">
+    <div class="bg-white border-3 border-charcoal rounded-3xl max-w-2xl w-full shadow-monster overflow-hidden my-auto page-enter">
+      <!-- Gateway Header (Razorpay/Stripe Style) -->
+      <div class="bg-charcoal text-cream px-6 py-4 flex items-center justify-between border-b-2 border-charcoal">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-saffron flex items-center justify-center font-display font-bold text-xl text-charcoal">B</div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-display font-bold text-lg">Bhookemon Pay</span>
+              <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2 py-0.5 rounded-full font-bold">256-BIT SSL SECURE</span>
+            </div>
+            <p class="text-xs text-cream/70" id="pg-merchant-sub">Order #BHK-9021 • Instant Confirmation</p>
+          </div>
+        </div>
+        <div class="text-right">
+          <span class="text-[11px] uppercase tracking-wider text-cream/60 block">Payable Amount</span>
+          <span id="pg-amount-display" class="font-display text-2xl font-bold text-mustard">₹0</span>
+        </div>
+      </div>
+
+      <!-- Gateway Body -->
+      <div id="pg-body" class="p-5 sm:p-6">
+        <!-- Populated dynamically with UPI / Card / NetBanking / COD tabs & OTP step -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TOAST NOTIFICATION CONTAINER ==================== -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 pointer-events-none"></div>
+
+  <!-- ==================== APPLICATION LOGIC & DATA ==================== -->
+  <script>
+    // -------------------- 1. CURATED GOURMET MENU DATA --------------------
+    const MENU_CATEGORIES = [
+      { id: 'all', name: 'All Cravings', icon: '🍽️' },
+      { id: 'starters', name: 'Starters & Munchies', icon: '🧀' },
+      { id: 'burgers', name: 'Burgers & Wraps', icon: '🍔' },
+      { id: 'pizzas', name: 'Pizzas & Pastas', icon: '🍕' },
+      { id: 'desi', name: 'Desi Feasts & Bowls', icon: '🍛' },
+      { id: 'desserts', name: 'Desserts & Shakes', icon: '🍫' },
+      { id: 'drinks', name: 'Drinks & Coolers', icon: '🥤' }
+    ];
+
+    const MENU_ITEMS = [
+      // Starters & Munchies
+      {
+        id: 'st-1',
+        name: 'Truffle Cheese Bombs',
+        category: 'starters',
+        price: 249,
+        rating: 4.9,
+        reviews: 340,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '420 kcal',
+        prepTime: '15 mins',
+        description: 'Crispy panko-crusted molten mozzarella & black truffle spheres served with roasted garlic aioli.',
+        palette: ['#FFB800', '#FF6B2B', '#FFF3CD'],
+        artworkType: 'cheese-bombs',
+        addons: [
+          { id: 'a1', name: 'Extra Truffle Aioli Dip', price: 39 },
+          { id: 'a2', name: 'Jalapeño Cheese Drizzle', price: 49 }
+        ]
+      },
+      {
+        id: 'st-2',
+        name: 'Crispy Dragon Paneer',
+        category: 'starters',
+        price: 279,
+        rating: 4.8,
+        reviews: 290,
+        veg: true,
+        spicy: true,
+        bestseller: true,
+        calories: '480 kcal',
+        prepTime: '18 mins',
+        description: 'Wok-tossed cottage cheese cubes glazed in fiery Bhoot Jolokia honey-chilli reduction & toasted sesame.',
+        palette: ['#D9383A', '#FF6B2B', '#FFE5E5'],
+        artworkType: 'dragon-paneer',
+        addons: [
+          { id: 'a3', name: 'Extra Sesame & Scallions', price: 25 },
+          { id: 'a4', name: 'Side of Kimchi Slaw', price: 55 }
+        ]
+      },
+      {
+        id: 'st-3',
+        name: 'Peri-Peri Monster Fries',
+        category: 'starters',
+        price: 189,
+        rating: 4.7,
+        reviews: 510,
+        veg: true,
+        spicy: true,
+        bestseller: false,
+        calories: '510 kcal',
+        prepTime: '12 mins',
+        description: 'Double-fried skin-on gourmet fries dusted with African bird’s eye peri-peri & liquid cheddar.',
+        palette: ['#FF6B2B', '#FFB800', '#FFF8E7'],
+        artworkType: 'fries',
+        addons: [
+          { id: 'a5', name: 'Loaded Cheddar & Olives', price: 65 },
+          { id: 'a6', name: 'Chipotle Mayo Dip', price: 35 }
+        ]
+      },
+      {
+        id: 'st-4',
+        name: 'Smoky Chicken Wings (6 Pcs)',
+        category: 'starters',
+        price: 319,
+        rating: 4.9,
+        reviews: 412,
+        veg: false,
+        spicy: true,
+        bestseller: true,
+        calories: '560 kcal',
+        prepTime: '20 mins',
+        description: 'Char-grilled free-range wings basted in hickory BBQ & habanero glaze with blue cheese ranch.',
+        palette: ['#8C2D19', '#FF6B2B', '#FDECE8'],
+        artworkType: 'wings',
+        addons: [
+          { id: 'a7', name: 'Upgrade to 10 Pieces', price: 149 },
+          { id: 'a8', name: 'Extra Blue Cheese Ranch', price: 45 }
+        ]
+      },
+
+      // Signature Burgers & Wraps
+      {
+        id: 'bg-1',
+        name: 'The Bhookemon Double Smash',
+        category: 'burgers',
+        price: 369,
+        rating: 4.9,
+        reviews: 680,
+        veg: false,
+        spicy: false,
+        bestseller: true,
+        calories: '740 kcal',
+        prepTime: '18 mins',
+        description: 'Two lacy-edged smashed tenderloin patties, aged cheddar, caramelized bourbon onions & secret monster sauce on brioche.',
+        palette: ['#FF6B2B', '#FFB800', '#2E7D32'],
+        artworkType: 'burger',
+        addons: [
+          { id: 'b1', name: 'Add Crispy Fried Egg', price: 40 },
+          { id: 'b2', name: 'Extra Aged Cheddar Slice', price: 45 },
+          { id: 'b3', name: 'Make it a Meal (+Fries & Drink)', price: 129 }
+        ]
+      },
+      {
+        id: 'bg-2',
+        name: 'Truffle Mushroom Melt Burger',
+        category: 'burgers',
+        price: 329,
+        rating: 4.8,
+        reviews: 315,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '610 kcal',
+        prepTime: '16 mins',
+        description: 'Portobello & herb-roasted patty crowned with Swiss gruyère, sautéed wild mushrooms, and truffle aioli.',
+        palette: ['#6D4C41', '#FFB800', '#EFEBE9'],
+        artworkType: 'burger-veg',
+        addons: [
+          { id: 'b4', name: 'Extra Swiss Gruyère', price: 50 },
+          { id: 'b5', name: 'Make it a Meal (+Fries & Drink)', price: 129 }
+        ]
+      },
+      {
+        id: 'bg-3',
+        name: 'Crispy Tandoori Tikka Wrap',
+        category: 'burgers',
+        price: 259,
+        rating: 4.7,
+        reviews: 275,
+        veg: true,
+        spicy: true,
+        bestseller: false,
+        calories: '490 kcal',
+        prepTime: '14 mins',
+        description: 'Charred malai paneer tikka, pickled pink onions, mint chutney & crunchy slaw rolled in flaky roomali.',
+        palette: ['#2E7D32', '#FF6B2B', '#E8F5E9'],
+        artworkType: 'wrap',
+        addons: [
+          { id: 'b6', name: 'Add Mozzarella Cheese Pull', price: 45 }
+        ]
+      },
+      {
+        id: 'bg-4',
+        name: 'Fiery Nashville Hot Bird Burger',
+        category: 'burgers',
+        price: 349,
+        rating: 4.9,
+        reviews: 520,
+        veg: false,
+        spicy: true,
+        bestseller: true,
+        calories: '690 kcal',
+        prepTime: '18 mins',
+        description: 'Buttermilk-brined crispy chicken thigh dipped in cayenne chili oil, house dill pickles & cool coleslaw.',
+        palette: ['#D9383A', '#FFB800', '#FFF0F0'],
+        artworkType: 'burger',
+        addons: [
+          { id: 'b7', name: 'Extra Dill Pickles & Slaw', price: 30 },
+          { id: 'b8', name: 'Make it a Meal (+Fries & Drink)', price: 129 }
+        ]
+      },
+
+      // Artisan Pizzas & Pastas
+      {
+        id: 'pz-1',
+        name: 'Smoked Burrata Margherita (11")',
+        category: 'pizzas',
+        price: 449,
+        rating: 4.9,
+        reviews: 490,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '820 kcal',
+        prepTime: '22 mins',
+        description: '48-hour fermented sourdough crust, San Marzano tomato sauce, fresh creamy burrata, basil oil & aged parmesan.',
+        palette: ['#D9383A', '#2E7D32', '#FFFDF7'],
+        artworkType: 'pizza',
+        addons: [
+          { id: 'p1', name: 'Cheese Burst Stuffed Crust', price: 99 },
+          { id: 'p2', name: 'Drizzle of Hot Honey', price: 39 }
+        ]
+      },
+      {
+        id: 'pz-2',
+        name: 'Ghost Pepper Pepperoni Pizza (11")',
+        category: 'pizzas',
+        price: 499,
+        rating: 4.8,
+        reviews: 370,
+        veg: false,
+        spicy: true,
+        bestseller: true,
+        calories: '910 kcal',
+        prepTime: '22 mins',
+        description: 'Double-stacked artisanal pork pepperoni cups, smoked provolone, jalapeño rings & ghost pepper honey.',
+        palette: ['#B71C1C', '#FFB800', '#FFEBEE'],
+        artworkType: 'pizza',
+        addons: [
+          { id: 'p3', name: 'Cheese Burst Stuffed Crust', price: 99 },
+          { id: 'p4', name: 'Extra Pepperoni Cups', price: 89 }
+        ]
+      },
+      {
+        id: 'pz-3',
+        name: 'Creamy Alfredo Truffle Penne',
+        category: 'pizzas',
+        price: 359,
+        rating: 4.7,
+        reviews: 245,
+        veg: true,
+        spicy: false,
+        bestseller: false,
+        calories: '670 kcal',
+        prepTime: '18 mins',
+        description: 'Bronze-die penne tossed in velvety 24-month parmesan cream, roasted garlic, broccoli florets & garlic bread.',
+        palette: ['#FFB800', '#2E7D32', '#FFFDE7'],
+        artworkType: 'pasta',
+        addons: [
+          { id: 'p5', name: 'Add Herb Grilled Chicken', price: 79 },
+          { id: 'p6', name: 'Extra Garlic Bread (2 Pcs)', price: 59 }
+        ]
+      },
+
+      // Desi Feasts & Bowls
+      {
+        id: 'ds-1',
+        name: 'Royal Butter Chicken Feast Bowl',
+        category: 'desi',
+        price: 379,
+        rating: 4.9,
+        reviews: 810,
+        veg: false,
+        spicy: false,
+        bestseller: true,
+        calories: '780 kcal',
+        prepTime: '20 mins',
+        description: 'Charcoal-smoked tandoori chicken tikka simmered in velvety fenugreek tomato makhani, served with saffron pulao & mini garlic naan.',
+        palette: ['#FF6B2B', '#FFB800', '#FFF3E0'],
+        artworkType: 'bowl',
+        addons: [
+          { id: 'd1', name: 'Extra Butter Garlic Naan', price: 49 },
+          { id: 'd2', name: 'Roasted Papad & Mint Raita', price: 39 }
+        ]
+      },
+      {
+        id: 'ds-2',
+        name: 'Hyderabadi Jackfruit Dum Biryani',
+        category: 'desi',
+        price: 339,
+        rating: 4.8,
+        reviews: 330,
+        veg: true,
+        spicy: true,
+        bestseller: false,
+        calories: '690 kcal',
+        prepTime: '22 mins',
+        description: 'Aged basmati rice slow-cooked in sealed handi with saffron-marinated tender jackfruit, caramelized birista & burani raita.',
+        palette: ['#FFB800', '#2E7D32', '#FFF8E1'],
+        artworkType: 'biryani',
+        addons: [
+          { id: 'd3', name: 'Extra Mirchi Ka Salan', price: 35 },
+          { id: 'd4', name: 'Gulab Jamun (1 Pc)', price: 45 }
+        ]
+      },
+      {
+        id: 'ds-3',
+        name: '24-Hr Dal Makhani & Naan Box',
+        category: 'desi',
+        price: 319,
+        rating: 4.9,
+        reviews: 590,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '720 kcal',
+        prepTime: '18 mins',
+        description: 'Slow-simmered black urad lentils finished with white churned butter, served with 2 flaky garlic naans & pickled onions.',
+        palette: ['#5D4037', '#FF6B2B', '#EFEBE9'],
+        artworkType: 'bowl',
+        addons: [
+          { id: 'd5', name: 'Add Paneer Tikka Skewers (2 Pcs)', price: 89 }
+        ]
+      },
+
+      // Desserts & Shakes
+      {
+        id: 'de-1',
+        name: 'Molten Lava Choco-Monster',
+        category: 'desserts',
+        price: 199,
+        rating: 4.9,
+        reviews: 640,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '490 kcal',
+        prepTime: '12 mins',
+        description: '70% Belgian dark chocolate soufflé cake with an oozing warm fudge core and Madagascar vanilla bean scoop.',
+        palette: ['#3E2723', '#FFB800', '#D7CCC8'],
+        artworkType: 'dessert',
+        addons: [
+          { id: 'e1', name: 'Extra Vanilla Bean Scoop', price: 59 }
+        ]
+      },
+      {
+        id: 'de-2',
+        name: 'Lotus Biscoff Cheesecake Jar',
+        category: 'desserts',
+        price: 239,
+        rating: 4.9,
+        reviews: 410,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '530 kcal',
+        prepTime: '8 mins',
+        description: 'No-bake Philadelphia cream cheese mousse layered over caramelized Biscoff biscuit crumble and cookie butter.',
+        palette: ['#C66900', '#FFB800', '#FFF3E0'],
+        artworkType: 'jar',
+        addons: []
+      },
+      {
+        id: 'de-3',
+        name: 'Alphonso Mango Monster Shake',
+        category: 'desserts',
+        price: 219,
+        rating: 4.8,
+        reviews: 350,
+        veg: true,
+        spicy: false,
+        bestseller: false,
+        calories: '440 kcal',
+        prepTime: '10 mins',
+        description: 'Thick Ratnagiri Alphonso mango gelato milkshake topped with whipped cream & roasted pistachio slivers.',
+        palette: ['#FFB800', '#FF6B2B', '#FFFDE7'],
+        artworkType: 'shake',
+        addons: []
+      },
+
+      // Drinks & Coolers
+      {
+        id: 'dr-1',
+        name: 'Mint Kala Khatta Fizz',
+        category: 'drinks',
+        price: 139,
+        rating: 4.8,
+        reviews: 295,
+        veg: true,
+        spicy: false,
+        bestseller: true,
+        calories: '140 kcal',
+        prepTime: '6 mins',
+        description: 'Nostalgic jamun & roasted cumin reduction muddled with garden mint, lime & sparkling tonic.',
+        palette: ['#6A1B9A', '#2E7D32', '#F3E5F5'],
+        artworkType: 'drink',
+        addons: []
+      },
+      {
+        id: 'dr-2',
+        name: 'Peach & Basil Iced Tea',
+        category: 'drinks',
+        price: 129,
+        rating: 4.7,
+        reviews: 210,
+        veg: true,
+        spicy: false,
+        bestseller: false,
+        calories: '110 kcal',
+        prepTime: '6 mins',
+        description: 'Cold-brewed Nilgiri black tea infused with white peach nectar and sweet Italian basil leaves.',
+        palette: ['#FF6B2B', '#2E7D32', '#FFF3E0'],
+        artworkType: 'drink',
+        addons: []
+      }
+    ];
+
+    const COMBO_DEALS = [
+      {
+        id: 'combo-1',
+        badge: 'MOST POPULAR',
+        title: 'The Hangry Duo Feast',
+        subtitle: 'Perfect for 2 hungry humans',
+        itemsIncluded: ['Any 2 Signature Burgers', '1 Peri-Peri Monster Fries', '2 Mint Kala Khatta Fizz'],
+        originalPrice: 1185,
+        price: 799,
+        veg: false,
+        color: 'bg-mustard',
+        cartItem: {
+          id: 'combo-duo',
+          name: 'The Hangry Duo Feast (Combo)',
+          price: 799,
+          veg: false,
+          artworkType: 'burger',
+          palette: ['#FFB800', '#FF6B2B', '#2E7D32']
+        }
+      },
+      {
+        id: 'combo-2',
+        badge: '100% PURE VEG',
+        title: 'Green Monster Party Box',
+        subtitle: 'Feeds a squad of 3–4',
+        itemsIncluded: ['Smoked Burrata Margherita (11")', 'Truffle Cheese Bombs', '24-Hr Dal Makhani & Naan Box', '2 Biscoff Cheesecake Jars'],
+        originalPrice: 1495,
+        price: 1049,
+        veg: true,
+        color: 'bg-emerald-300',
+        cartItem: {
+          id: 'combo-veg-party',
+          name: 'Green Monster Party Box (Combo)',
+          price: 1049,
+          veg: true,
+          artworkType: 'pizza',
+          palette: ['#2E7D32', '#FFB800', '#E8F5E9']
+        }
+      },
+      {
+        id: 'combo-3',
+        badge: 'LATE NIGHT SPECIAL',
+        title: 'Midnight Solo Craving Box',
+        subtitle: 'One-person gourmet indulgence',
+        itemsIncluded: ['Royal Butter Chicken Bowl', 'Molten Lava Choco-Monster', 'Peach & Basil Iced Tea'],
+        originalPrice: 707,
+        price: 499,
+        veg: false,
+        color: 'bg-orange-300',
+        cartItem: {
+          id: 'combo-solo',
+          name: 'Midnight Solo Craving Box',
+          price: 499,
+          veg: false,
+          artworkType: 'bowl',
+          palette: ['#FF6B2B', '#FFB800', '#FFF3E0']
+        }
+      }
+    ];
+
+    const PROMO_CODES = {
+      'BHOOK100': { type: 'flat', value: 100, minOrder: 499, desc: 'Flat ₹100 OFF on orders above ₹499' },
+      'MONSTER20': { type: 'percent', value: 20, maxDiscount: 180, minOrder: 350, desc: '20% OFF up to ₹180' },
+      'FIRSTBITE': { type: 'flat', value: 75, minOrder: 299, desc: '₹75 OFF for First-Time Monster Feeders' }
+    };
+
+    // -------------------- 2. APPLICATION STATE --------------------
+    let state = {
+      currentPage: 'home',
+      menuCategory: 'all',
+      menuSearch: '',
+      dietaryFilter: 'all', // 'all' | 'veg' | 'nonveg' | 'bestseller' | 'spicy'
+      cart: JSON.parse(localStorage.getItem('bhookemon_cart') || '[]'),
+      appliedPromo: localStorage.getItem('bhookemon_promo') || '',
+      deliveryTip: 30,
+      customerDetails: JSON.parse(localStorage.getItem('bhookemon_customer') || JSON.stringify({
+        name: 'Aarav Sharma',
+        phone: '+91 98765 43210',
+        email: 'aarav.hungry@example.com',
+        address: 'Flat 402, Sapphire Heights, 12th Main Indiranagar',
+        landmark: 'Near Toit Brewpub',
+        city: 'Bengaluru - 560038',
+        instructions: 'Ring bell twice, leave at door if Bhookemon is sleeping.'
+      })),
+      orders: JSON.parse(localStorage.getItem('bhookemon_orders') || '[]'),
+      activeOrderId: localStorage.getItem('bhookemon_active_order') || null,
+      pgTab: 'upi', // 'upi' | 'card' | 'netbanking' | 'cod'
+      pgStep: 'method', // 'method' | 'otp' | 'processing'
+      cardDetails: {
+        number: '4532 •••• •••• 8894',
+        rawNumber: '',
+        holder: 'AARAV SHARMA',
+        expiry: '09/29',
+        cvv: '',
+        flipped: false
+      },
+      selectedBank: 'HDFC Bank',
+      upiId: 'aarav@okicici'
+    };
+
+    // Seed initial cart if brand new user so Checkout & Basket feel rich immediately
+    if (!localStorage.getItem('bhookemon_initialized')) {
+      state.cart = [
+        {
+          cartKey: 'bg-1__',
+          id: 'bg-1',
+          name: 'The Bhookemon Double Smash',
+          price: 369,
+          qty: 1,
+          veg: false,
+          addons: [],
+          artworkType: 'burger',
+          palette: ['#FF6B2B', '#FFB800', '#2E7D32']
+        },
+        {
+          cartKey: 'st-1__',
+          id: 'st-1',
+          name: 'Truffle Cheese Bombs',
+          price: 249,
+          qty: 1,
+          veg: true,
+          addons: [],
+          artworkType: 'cheese-bombs',
+          palette: ['#FFB800', '#FF6B2B', '#FFF3CD']
+        }
+      ];
+      localStorage.setItem('bhookemon_initialized', 'true');
+      saveCart();
+    }
+
+    function saveCart() {
+      localStorage.setItem('bhookemon_cart', JSON.stringify(state.cart));
+      updateCartUI();
+    }
+
+    function saveOrders() {
+      localStorage.setItem('bhookemon_orders', JSON.stringify(state.orders));
+      if (state.activeOrderId) {
+        localStorage.setItem('bhookemon_active_order', state.activeOrderId);
+      }
+      updateActiveOrderDot();
+    }
+
+    // -------------------- 3. CUSTOM SVG FOOD & MASCOT ARTWORK GENERATOR --------------------
+    function getMascotSVG(mood = 'happy', sizeClass = 'w-64 h-64') {
+      // Charming, expressive Bhookemon SVG character
+      return `
+        <svg viewBox="0 0 260 260" class="${sizeClass} select-none drop-shadow-xl" xmlns="http://www.w3.org/2000/svg">
+          <!-- Soft Ground Shadow -->
+          <ellipse cx="130" cy="242" rx="74" ry="12" fill="#1E1B18" opacity="0.16"/>
+          
+          <!-- Left & Right Chubby Arms -->
+          <path d="M54 148 C24 134, 20 166, 48 176" fill="#FF6B2B" stroke="#1E1B18" stroke-width="5" stroke-linecap="round"/>
+          <path d="M206 148 C236 124, 244 156, 212 172" fill="#FF6B2B" stroke="#1E1B18" stroke-width="5" stroke-linecap="round"/>
+          
+          <!-- Little Burger in Right Hand! -->
+          <g transform="translate(204, 112) rotate(12)">
+            <path d="M4 18 C4 6, 36 6, 36 18 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3"/>
+            <rect x="2" y="18" width="36" height="5" rx="2.5" fill="#2E7D32" stroke="#1E1B18" stroke-width="2.5"/>
+            <rect x="3" y="23" width="34" height="6" rx="3" fill="#5D4037" stroke="#1E1B18" stroke-width="2.5"/>
+            <path d="M5 29 L35 29 C35 35, 5 35, 5 29 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3"/>
+          </g>
+
+          <!-- Cute Monster Feet -->
+          <path d="M84 218 L76 236 L104 236 L102 218 Z" fill="#E55314" stroke="#1E1B18" stroke-width="4.5" stroke-linejoin="round"/>
+          <path d="M156 218 L154 236 L184 236 L176 218 Z" fill="#E55314" stroke="#1E1B18" stroke-width="4.5" stroke-linejoin="round"/>
+
+          <!-- Stripy Golden Horns -->
+          <path d="M74 68 L52 24 L98 52 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M64 46 L78 54" stroke="#1E1B18" stroke-width="4" stroke-linecap="round"/>
+          <path d="M186 68 L208 24 L162 52 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="5" stroke-linejoin="round"/>
+          <path d="M196 46 L182 54" stroke="#1E1B18" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- Chef Hat Tilted on Head -->
+          <g transform="translate(106, 12) rotate(-8)">
+            <path d="M10 34 C0 28, 2 10, 16 12 C20 2, 38 2, 42 12 C56 10, 58 28, 48 34 L46 44 L12 44 Z" fill="#FFFDF7" stroke="#1E1B18" stroke-width="4" stroke-linejoin="round"/>
+            <line x1="12" y1="36" x2="46" y2="36" stroke="#FF6B2B" stroke-width="3.5"/>
+          </g>
+
+          <!-- Plump Monster Body -->
+          <rect x="52" y="54" width="156" height="168" rx="74" fill="#FF6B2B" stroke="#1E1B18" stroke-width="5.5"/>
+          
+          <!-- Warm Cream Tummy Patch -->
+          <ellipse cx="130" cy="176" rx="48" ry="34" fill="#FFFDF7" stroke="#1E1B18" stroke-width="4"/>
+          <path d="M112 172 Q130 184 148 172" fill="none" stroke="#E8DFC8" stroke-width="4" stroke-linecap="round"/>
+
+          <!-- Rosy Cheeks -->
+          <ellipse cx="78" cy="122" rx="11" ry="6" fill="#FF4D6D" opacity="0.65"/>
+          <ellipse cx="182" cy="122" rx="11" ry="6" fill="#FF4D6D" opacity="0.65"/>
+
+          <!-- Expressive Big Cartoon Eyes -->
+          <circle cx="98" cy="102" r="21" fill="#FFFDF7" stroke="#1E1B18" stroke-width="4.5"/>
+          <circle cx="102" cy="102" r="10" fill="#1E1B18"/>
+          <circle cx="106" cy="97" r="4" fill="#FFFDF7"/>
+          <circle cx="97" cy="106" r="2" fill="#FFFDF7"/>
+
+          <circle cx="162" cy="102" r="21" fill="#FFFDF7" stroke="#1E1B18" stroke-width="4.5"/>
+          <circle cx="158" cy="102" r="10" fill="#1E1B18"/>
+          <circle cx="162" cy="97" r="4" fill="#FFFDF7"/>
+          <circle cx="154" cy="106" r="2" fill="#FFFDF7"/>
+
+          <!-- Playful Eyebrows -->
+          <path d="M80 76 Q98 68 114 77" fill="none" stroke="#1E1B18" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M146 77 Q162 68 180 76" fill="none" stroke="#1E1B18" stroke-width="4.5" stroke-linecap="round"/>
+
+          <!-- Big Happy Hungry Mouth with Cute Fangs & Tongue -->
+          <g class="animate-chomp">
+            <path d="M88 128 Q130 164 172 128 Q154 122 130 125 Q106 122 88 128 Z" fill="#1E1B18"/>
+            <!-- Little White Fangs -->
+            <path d="M98 127 L104 139 L111 126 Z" fill="#FFFDF7"/>
+            <path d="M149 126 L156 139 L162 127 Z" fill="#FFFDF7"/>
+            <!-- Happy Pink Tongue -->
+            <path d="M112 146 Q130 136 148 146 Q130 158 112 146 Z" fill="#FF4D6D"/>
+          </g>
+        </svg>
+      `;
+    }
+
+    function getFoodIllustrationSVG(type, palette = ['#FF6B2B', '#FFB800', '#FFFDF7']) {
+      const [c1, c2, c3] = palette;
+      const icons = {
+        'burger': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="106" rx="54" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <!-- Bottom Bun -->
+            <path d="M34 86 L126 86 C126 98, 34 98, 34 86 Z" fill="#E69A28" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Double Smash Patties -->
+            <rect x="28" y="74" width="104" height="12" rx="6" fill="#4E2A1E" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Melted Cheddar -->
+            <path d="M30 74 L130 74 L116 84 L100 74 L80 86 L62 74 L44 83 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="30" y="62" width="100" height="12" rx="6" fill="#5D3426" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Crispy Lettuce -->
+            <path d="M26 60 Q38 52 50 60 Q62 52 74 60 Q86 52 98 60 Q110 52 122 60 Q130 55 134 62" fill="none" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+            <!-- Top Brioche Bun -->
+            <path d="M32 56 C32 22, 128 22, 128 56 Z" fill="#FF8C24" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Sesame Seeds -->
+            <ellipse cx="64" cy="36" rx="3.5" ry="2" fill="#FFFDF7" transform="rotate(-15 64 36)"/>
+            <ellipse cx="82" cy="32" rx="3.5" ry="2" fill="#FFFDF7"/>
+            <ellipse cx="100" cy="38" rx="3.5" ry="2" fill="#FFFDF7" transform="rotate(15 100 38)"/>
+            <ellipse cx="74" cy="45" rx="3.5" ry="2" fill="#FFFDF7"/>
+            <ellipse cx="92" cy="45" rx="3.5" ry="2" fill="#FFFDF7"/>
+          </svg>`,
+        'burger-veg': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="106" rx="54" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <path d="M36 86 L124 86 C124 98, 36 98, 36 86 Z" fill="#E69A28" stroke="#1E1B18" stroke-width="3.5"/>
+            <rect x="32" y="70" width="96" height="15" rx="7" fill="#6D4C41" stroke="#1E1B18" stroke-width="3.5"/>
+            <path d="M34 70 L126 70 L108 82 L84 70 L60 81 Z" fill="#FFF8E1" stroke="#1E1B18" stroke-width="3"/>
+            <path d="M28 64 Q54 54 80 64 Q106 54 132 64" fill="none" stroke="#2E7D32" stroke-width="6" stroke-linecap="round"/>
+            <path d="M34 58 C34 24, 126 24, 126 58 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5"/>
+            <circle cx="80" cy="38" r="3" fill="#FFFDF7"/><circle cx="64" cy="43" r="3" fill="#FFFDF7"/><circle cx="96" cy="43" r="3" fill="#FFFDF7"/>
+          </svg>`,
+        'pizza': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="106" rx="50" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <!-- Giant Cheesy Slice -->
+            <path d="M36 30 Q80 14 124 30 L80 102 Z" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <!-- Sourdough Crust -->
+            <path d="M32 32 Q80 12 128 32" fill="none" stroke="#E57A25" stroke-width="11" stroke-linecap="round"/>
+            <path d="M32 32 Q80 12 128 32" fill="none" stroke="#1E1B18" stroke-width="3.5" stroke-linecap="round"/>
+            <!-- Toppings -->
+            <circle cx="72" cy="46" r="8" fill="${c1}" stroke="#1E1B18" stroke-width="2.5"/>
+            <circle cx="94" cy="52" r="7" fill="${c1}" stroke="#1E1B18" stroke-width="2.5"/>
+            <circle cx="80" cy="72" r="7.5" fill="${c1}" stroke="#1E1B18" stroke-width="2.5"/>
+            <ellipse cx="62" cy="62" rx="6" ry="3.5" fill="#2E7D32" transform="rotate(-25 62 62)"/>
+            <ellipse cx="92" cy="36" rx="6" ry="3.5" fill="#2E7D32" transform="rotate(20 92 36)"/>
+          </svg>`,
+        'cheese-bombs': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="104" rx="54" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <path d="M28 84 L132 84 L120 100 L40 100 Z" fill="#1E1B18"/>
+            <circle cx="58" cy="72" r="20" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5"/>
+            <circle cx="102" cy="72" r="20" fill="#FF8C24" stroke="#1E1B18" stroke-width="3.5"/>
+            <circle cx="80" cy="48" r="22" fill="#FFB800" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Oozing Cheese Pull -->
+            <path d="M72 48 Q80 76 88 48" fill="#FFFDF7" stroke="#1E1B18" stroke-width="2.5"/>
+            <circle cx="74" cy="40" r="2.5" fill="#2E7D32"/><circle cx="88" cy="42" r="2.5" fill="#2E7D32"/>
+          </svg>`,
+        'fries': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="106" rx="44" ry="7" fill="#1E1B18" opacity="0.14"/>
+            <!-- Fries Sticks -->
+            <rect x="52" y="22" width="10" height="48" rx="3" fill="#FFB800" stroke="#1E1B18" stroke-width="3" transform="rotate(-12 52 22)"/>
+            <rect x="68" y="16" width="10" height="52" rx="3" fill="#FFD54F" stroke="#1E1B18" stroke-width="3" transform="rotate(-4 68 16)"/>
+            <rect x="84" y="16" width="10" height="52" rx="3" fill="#FFB800" stroke="#1E1B18" stroke-width="3" transform="rotate(5 84 16)"/>
+            <rect x="100" y="24" width="10" height="46" rx="3" fill="#FFD54F" stroke="#1E1B18" stroke-width="3" transform="rotate(14 100 24)"/>
+            <!-- Carton -->
+            <path d="M46 54 Q80 66 114 54 L104 100 L56 100 Z" fill="#FF6B2B" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <circle cx="80" cy="78" r="10" fill="#FFFDF7" stroke="#1E1B18" stroke-width="2.5"/>
+          </svg>`,
+        'bowl': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="105" rx="48" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <!-- Rich Curry & Naan -->
+            <ellipse cx="105" cy="48" rx="24" ry="16" fill="#F5DEB3" stroke="#1E1B18" stroke-width="3" transform="rotate(20 105 48)"/>
+            <path d="M32 56 L128 56 C124 94, 36 94, 32 56 Z" fill="#1E1B18" stroke="#1E1B18" stroke-width="3.5"/>
+            <ellipse cx="80" cy="56" rx="48" ry="12" fill="${c1}" stroke="#1E1B18" stroke-width="3.5"/>
+            <!-- Cream Swirl -->
+            <path d="M62 56 Q80 48 98 56 Q80 64 68 56" fill="none" stroke="#FFFDF7" stroke-width="3.5" stroke-linecap="round"/>
+            <circle cx="80" cy="55" r="4" fill="#2E7D32"/>
+          </svg>`,
+        'dessert': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="106" rx="48" ry="8" fill="#1E1B18" opacity="0.14"/>
+            <!-- Choco Lava Cake -->
+            <path d="M44 54 L116 54 L124 96 L36 96 Z" fill="#3E2723" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <!-- Oozing Lava -->
+            <path d="M44 54 Q62 76 74 58 Q88 82 102 60 Q112 72 116 54 Z" fill="#6D4C41"/>
+            <!-- Vanilla Scoop -->
+            <circle cx="80" cy="42" r="18" fill="#FFFDF7" stroke="#1E1B18" stroke-width="3.5"/>
+            <circle cx="80" cy="23" r="5" fill="#D9383A" stroke="#1E1B18" stroke-width="2.5"/>
+          </svg>`,
+        'drink': `
+          <svg viewBox="0 0 160 120" class="w-full h-36">
+            <ellipse cx="80" cy="107" rx="34" ry="7" fill="#1E1B18" opacity="0.14"/>
+            <!-- Straw -->
+            <path d="M90 42 L106 14 L118 16" fill="none" stroke="#FF6B2B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Glass -->
+            <path d="M54 38 L106 38 L98 100 L62 100 Z" fill="${c3}" stroke="#1E1B18" stroke-width="3.5" stroke-linejoin="round"/>
+            <path d="M56 52 L104 52 L98 100 L62 100 Z" fill="${c1}" opacity="0.85"/>
+            <!-- Ice Cubes & Lime -->
+            <rect x="66" y="58" width="12" height="12" rx="3" fill="#FFFDF7" opacity="0.7" transform="rotate(12 66 58)"/>
+            <rect x="82" y="66" width="12" height="12" rx="3" fill="#FFFDF7" opacity="0.7" transform="rotate(-10 82 66)"/>
+            <circle cx="54" cy="38" r="11" fill="#2E7D32" stroke="#1E1B18" stroke-width="3"/>
+          </svg>`
+      };
+
+      // Map fallback types
+      const mapType = {
+        'dragon-paneer': 'cheese-bombs',
+        'wings': 'cheese-bombs',
+        'wrap': 'burger-veg',
+        'pasta': 'bowl',
+        'biryani': 'bowl',
+        'jar': 'dessert',
+        'shake': 'drink'
+      };
+      return icons[type] || icons[mapType[type]] || icons['burger'];
+    }
+
+    // -------------------- 4. ROUTING & NAVIGATION --------------------
+    function navigateTo(page) {
+      state.currentPage = page;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      updateNavHighlight();
+      renderApp();
+    }
+
+    function updateNavHighlight() {
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav') === state.currentPage;
+        if (isTarget) {
+          btn.classList.add('bg-charcoal', 'text-cream', 'shadow-xs');
+          btn.classList.remove('text-charcoal', 'hover:bg-white/70');
+        } else {
+          btn.classList.remove('bg-charcoal', 'text-cream', 'shadow-xs');
+          btn.classList.add('text-charcoal', 'hover:bg-white/70');
+        }
+      });
+    }
+
+    function toggleMobileMenu() {
+      const mobileNav = document.getElementById('mobile-nav');
+      mobileNav.classList.toggle('hidden');
+    }
+
+    function updateActiveOrderDot() {
+      const dot = document.getElementById('nav-active-dot');
+      if (!dot) return;
+      if (state.activeOrderId) {
+        dot.classList.remove('hidden');
+      } else {
+        dot.classList.add('hidden');
+      }
+    }
+
+    // -------------------- 5. CART & PRICING CALCULATIONS --------------------
+    function getCartTotals() {
+      const subtotal = state.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const itemCount = state.cart.reduce((sum, item) => sum + item.qty, 0);
+      const deliveryFee = subtotal === 0 ? 0 : (subtotal >= 499 ? 0 : 45);
+      const packagingFee = subtotal === 0 ? 0 : 25;
+
+      let discount = 0;
+      const promo = PROMO_CODES[state.appliedPromo];
+      if (promo && subtotal >= promo.minOrder) {
+        if (promo.type === 'flat') {
+          discount = promo.value;
+        } else if (promo.type === 'percent') {
+          discount = Math.min(Math.round((subtotal * promo.value) / 100), promo.maxDiscount);
+        }
+      }
+
+      const taxableAmount = Math.max(0, subtotal - discount);
+      const gst = Math.round(taxableAmount * 0.05); // 5% Restaurant GST
+      const tip = subtotal === 0 ? 0 : state.deliveryTip;
+      const grandTotal = Math.max(0, taxableAmount + deliveryFee + packagingFee + gst + tip);
+
+      return { subtotal, itemCount, deliveryFee, packagingFee, discount, gst, tip, grandTotal };
+    }
+
+    function addToCart(itemObj, selectedAddons = [], qty = 1) {
+      const addonPrice = selectedAddons.reduce((s, a) => s + a.price, 0);
+      const unitPrice = itemObj.price + addonPrice;
+      const addonIds = selectedAddons.map(a => a.id).sort().join('-');
+      const cartKey = `${itemObj.id}__${addonIds}`;
+
+      const existing = state.cart.find(c => c.cartKey === cartKey);
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        state.cart.push({
+          cartKey,
+          id: itemObj.id,
+          name: itemObj.name,
+          price: unitPrice,
+          qty,
+          veg: itemObj.veg,
+          addons: selectedAddons,
+          artworkType: itemObj.artworkType,
+          palette: itemObj.palette
+        });
+      }
+
+      saveCart();
+      popCartBadge();
+      showToast(`Nom nom! Added "${itemObj.name}" to your basket.`);
+      if (state.currentPage === 'menu' || state.currentPage === 'home' || state.currentPage === 'checkout') {
+        renderApp();
+      }
+    }
+
+    function updateCartItemQty(cartKey, delta) {
+      const idx = state.cart.findIndex(c => c.cartKey === cartKey);
+      if (idx === -1) return;
+
+      state.cart[idx].qty += delta;
+      if (state.cart[idx].qty <= 0) {
+        const removedName = state.cart[idx].name;
+        state.cart.splice(idx, 1);
+        showToast(`Removed "${removedName}" from basket.`);
+      }
+      saveCart();
+      renderApp();
+    }
+
+    function popCartBadge() {
+      const badge = document.getElementById('header-cart-count');
+      if (!badge) return;
+      badge.classList.remove('badge-pop');
+      void badge.offsetWidth;
+      badge.classList.add('badge-pop');
+    }
+
+    function toggleCartDrawer(open) {
+      const drawer = document.getElementById('cart-drawer');
+      const backdrop = document.getElementById('cart-drawer-backdrop');
+      if (open) {
+        backdrop.classList.remove('hidden');
+        drawer.classList.remove('translate-x-full');
+        updateCartUI();
+      } else {
+        drawer.classList.add('translate-x-full');
+        backdrop.classList.add('hidden');
+      }
+    }
+
+    function updateCartUI() {
+      const { subtotal, itemCount } = getCartTotals();
+      const countEl = document.getElementById('header-cart-count');
+      if (countEl) countEl.textContent = itemCount;
+
+      // Free delivery meter
+      const target = 499;
+      const pct = Math.min(100, Math.round((subtotal / target) * 100));
+      const barEl = document.getElementById('free-delivery-bar');
+      const pctEl = document.getElementById('free-delivery-pct');
+      const textEl = document.getElementById('free-delivery-text');
+      if (barEl && pctEl && textEl) {
+        barEl.style.width = `${pct}%`;
+        pctEl.textContent = `${pct}%`;
+        if (subtotal >= target) {
+          textEl.innerHTML = `<span class="text-sage font-extrabold">🎉 Unlocked FREE Monster Delivery!</span>`;
+        } else {
+          textEl.textContent = `Add ₹${target - subtotal} more for FREE Delivery!`;
+        }
+      }
+
+      const container = document.getElementById('drawer-items-container');
+      const footer = document.getElementById('drawer-footer');
+      const subEl = document.getElementById('drawer-subtotal');
+      if (!container) return;
+
+      if (state.cart.length === 0) {
+        footer.classList.add('hidden');
+        container.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-center py-12 px-4">
+            <div class="w-28 h-28 mb-4">${getMascotSVG('hungry', 'w-28 h-28')}</div>
+            <h4 class="font-display text-2xl font-bold text-charcoal">Bhookemon's tummy is rumbling!</h4>
+            <p class="text-sm text-charcoal/70 mt-1 mb-6">Your basket is empty. Add some burgers, pizzas, or desi bowls to tame the beast.</p>
+            <button onclick="toggleCartDrawer(false); navigateTo('menu')" class="btn-monster bg-saffron text-white font-display font-bold px-6 py-3 rounded-2xl">
+              Explore Menu
+            </button>
+          </div>
+        `;
+      } else {
+        footer.classList.remove('hidden');
+        subEl.textContent = `₹${subtotal}`;
+        container.innerHTML = state.cart.map(item => `
+          <div class="bg-white border-2 border-charcoal rounded-2xl p-3.5 flex items-center justify-between gap-3 shadow-xs">
+            <div class="flex items-start gap-2.5">
+              ${getVegBadge(item.veg)}
+              <div>
+                <h5 class="font-display font-bold text-charcoal text-base leading-tight">${item.name}</h5>
+                ${item.addons && item.addons.length ? `<p class="text-[11px] text-charcoal/60 mt-0.5">+ ${item.addons.map(a => a.name).join(', ')}</p>` : ''}
+                <span class="font-bold text-sm text-saffron block mt-1">₹${item.price * item.qty}</span>
+              </div>
+            </div>
+            <div class="flex items-center bg-creamDark border-2 border-charcoal rounded-xl overflow-hidden">
+              <button onclick="updateCartItemQty('${item.cartKey}', -1)" class="px-2.5 py-1 font-extrabold text-charcoal hover:bg-saffron hover:text-white transition">−</button>
+              <span class="px-2.5 py-1 font-display font-bold text-sm">${item.qty}</span>
+              <button onclick="updateCartItemQty('${item.cartKey}', 1)" class="px-2.5 py-1 font-extrabold text-charcoal hover:bg-saffron hover:text-white transition">+</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // -------------------- 6. HELPER UI COMPONENTS --------------------
+    function getVegBadge(isVeg) {
+      return isVeg
+        ? `<span title="100% Vegetarian" class="inline-flex items-center justify-center w-4 h-4 border-2 border-sage rounded-xs bg-white shrink-0 mt-0.5"><span class="w-2 h-2 rounded-full bg-sage"></span></span>`
+        : `<span title="Non-Vegetarian" class="inline-flex items-center justify-center w-4 h-4 border-2 border-berry rounded-xs bg-white shrink-0 mt-0.5"><span class="w-0 h-0 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-b-[7px] border-b-berry"></span></span>`;
+    }
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bg = type === 'error' ? 'bg-berry text-white' : 'bg-charcoal text-cream';
+      toast.className = `${bg} border-2 border-mustard shadow-monsterSm px-4 py-3 rounded-2xl text-sm font-bold flex items-center gap-2.5 pointer-events-auto page-enter max-w-sm`;
+      toast.innerHTML = `<span>${type === 'error' ? '⚠️' : '👾'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.25s ease';
+        setTimeout(() => toast.remove(), 260);
+      }, 2800);
+    }
+
+    function copyPromoCode(code) {
+      const tempInput = document.createElement('input');
+      tempInput.value = code;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+
+      state.appliedPromo = code;
+      localStorage.setItem('bhookemon_promo', code);
+      showToast(`Copied & applied promo code "${code}"!`);
+      if (state.currentPage === 'checkout') renderApp();
+    }
+
+    // -------------------- 7. ITEM CUSTOMIZATION MODAL --------------------
+    function openCustomizeModal(itemId) {
+      const item = MENU_ITEMS.find(i => i.id === itemId);
+      if (!item) return;
+
+      const modal = document.getElementById('customize-modal');
+      const content = document.getElementById('customize-modal-content');
+
+      content.innerHTML = `
+        <div class="bg-creamDark p-5 border-b-2 border-charcoal flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            ${getVegBadge(item.veg)}
+            <div>
+              <h3 class="font-display text-xl font-bold text-charcoal">${item.name}</h3>
+              <span class="text-xs font-semibold text-charcoal/65">Base Price: ₹${item.price} • ${item.calories}</span>
+            </div>
+          </div>
+          <button onclick="closeCustomizeModal()" class="w-9 h-9 rounded-xl bg-white border-2 border-charcoal font-bold hover:bg-saffron hover:text-white transition">✕</button>
+        </div>
+
+        <div class="p-6 space-y-5">
+          <p class="text-sm text-charcoal/80">${item.description}</p>
+
+          ${item.addons && item.addons.length > 0 ? `
+            <div>
+              <h4 class="font-display font-bold text-base text-charcoal mb-2.5">Monster Upgrades & Add-ons</h4>
+              <div class="space-y-2">
+                ${item.addons.map(addon => `
+                  <label class="flex items-center justify-between p-3 rounded-xl border-2 border-charcoal/20 hover:border-charcoal bg-white cursor-pointer transition">
+                    <div class="flex items-center gap-3">
+                      <input type="checkbox" value="${addon.id}" class="addon-checkbox w-5 h-5 accent-saffron rounded" onchange="updateCustomizeModalPrice('${item.id}')" />
+                      <span class="font-semibold text-sm text-charcoal">${addon.name}</span>
+                    </div>
+                    <span class="font-bold text-sm text-saffron">+₹${addon.price}</span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-xs font-semibold text-charcoal/80">
+              ✨ Prepared fresh to order by our Monster Chefs with signature house garnish.
+            </div>
+          `}
+
+          <div class="flex items-center justify-between pt-2 border-t border-charcoal/15">
+            <div class="flex items-center bg-creamDark border-2 border-charcoal rounded-xl">
+              <button onclick="changeModalQty(-1, '${item.id}')" class="px-3.5 py-2 font-extrabold text-lg">−</button>
+              <span id="modal-qty-val" class="px-3 font-display font-bold text-lg">1</span>
+              <button onclick="changeModalQty(1, '${item.id}')" class="px-3.5 py-2 font-extrabold text-lg">+</button>
+            </div>
+            <button id="modal-add-btn" onclick="confirmCustomAdd('${item.id}')" class="btn-monster bg-saffron text-white font-display font-bold px-6 py-3 rounded-2xl text-base">
+              Add to Basket • ₹${item.price}
+            </button>
+          </div>
+        </div>
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCustomizeModal() {
+      const modal = document.getElementById('customize-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function changeModalQty(delta, itemId) {
+      const qtyEl = document.getElementById('modal-qty-val');
+      let q = parseInt(qtyEl.textContent, 10) + delta;
+      if (q < 1) q = 1;
+      qtyEl.textContent = q;
+      updateCustomizeModalPrice(itemId);
+    }
+
+    function updateCustomizeModalPrice(itemId) {
+      const item = MENU_ITEMS.find(i => i.id === itemId);
+      const qty = parseInt(document.getElementById('modal-qty-val').textContent, 10);
+      const checkedIds = Array.from(document.querySelectorAll('.addon-checkbox:checked')).map(cb => cb.value);
+      const addonsTotal = (item.addons || []).filter(a => checkedIds.includes(a.id)).reduce((s, a) => s + a.price, 0);
+      const total = (item.price + addonsTotal) * qty;
+      document.getElementById('modal-add-btn').textContent = `Add to Basket • ₹${total}`;
+    }
+
+    function confirmCustomAdd(itemId) {
+      const item = MENU_ITEMS.find(i => i.id === itemId);
+      const qty = parseInt(document.getElementById('modal-qty-val').textContent, 10);
+      const checkedIds = Array.from(document.querySelectorAll('.addon-checkbox:checked')).map(cb => cb.value);
+      const selectedAddons = (item.addons || []).filter(a => checkedIds.includes(a.id));
+      addToCart(item, selectedAddons, qty);
+      closeCustomizeModal();
+    }
+
+    // -------------------- 8. MENU CARD RENDERER --------------------
+    function renderMenuItemCard(item) {
+      const inCartEntries = state.cart.filter(c => c.id === item.id);
+      const totalQty = inCartEntries.reduce((s, c) => s + c.qty, 0);
+      const simpleCartEntry = state.cart.find(c => c.cartKey === `${item.id}__`);
+
+      return `
+        <div class="card-monster bg-white rounded-3xl overflow-hidden flex flex-col justify-between group">
+          <div>
+            <!-- Stylized Illustration Banner -->
+            <div class="relative bg-creamDark/80 border-b-2 border-charcoal p-4 flex items-center justify-center overflow-hidden">
+              <div class="transform group-hover:scale-105 transition-transform duration-300 w-full">
+                ${getFoodIllustrationSVG(item.artworkType, item.palette)}
+              </div>
+              
+              <!-- Top Badges -->
+              <div class="absolute top-3 left-3 flex flex-wrap gap-1.5">
+                <span class="bg-white border-2 border-charcoal px-2 py-0.5 rounded-lg flex items-center gap-1 text-xs font-bold">
+                  ${getVegBadge(item.veg)}
+                  <span>${item.veg ? 'Veg' : 'Non-Veg'}</span>
+                </span>
+                ${item.bestseller ? `<span class="bg-mustard border-2 border-charcoal px-2.5 py-0.5 rounded-lg text-[11px] font-extrabold text-charcoal">★ Bestseller</span>` : ''}
+                ${item.spicy ? `<span class="bg-berry text-white border-2 border-charcoal px-2 py-0.5 rounded-lg text-[11px] font-bold">🌶️ Spicy</span>` : ''}
+              </div>
+
+              <!-- Rating Pill -->
+              <div class="absolute bottom-3 right-3 bg-charcoal text-cream px-2.5 py-1 rounded-xl text-xs font-bold flex items-center gap-1">
+                <span class="text-mustard">★</span>
+                <span>${item.rating}</span>
+                <span class="text-cream/60">(${item.reviews})</span>
+              </div>
+            </div>
+
+            <!-- Item Details -->
+            <div class="p-5">
+              <div class="flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-charcoal/55 mb-1">
+                <span>⏱ ${item.prepTime}</span>
+                <span>🔥 ${item.calories}</span>
+              </div>
+              <h3 class="font-display text-xl font-bold text-charcoal leading-snug mb-2 group-hover:text-saffron transition-colors">
+                ${item.name}
+              </h3>
+              <p class="text-xs sm:text-sm text-charcoal/75 line-clamp-2 leading-relaxed">
+                ${item.description}
+              </p>
+            </div>
+          </div>
+
+          <!-- Price & Interactive Controls -->
+          <div class="px-5 pb-5 pt-2 flex items-center justify-between gap-3">
+            <div>
+              <span class="text-[11px] font-semibold text-charcoal/50 block">Price</span>
+              <span class="font-display text-2xl font-bold text-charcoal">₹${item.price}</span>
+            </div>
+
+            <div class="flex items-center gap-2">
+              ${item.addons && item.addons.length > 0 ? `
+                <button onclick="openCustomizeModal('${item.id}')" title="Customize Add-ons" class="px-3 py-2.5 rounded-xl border-2 border-charcoal bg-cream hover:bg-mustard text-xs font-bold transition">
+                  +Add-ons
+                </button>
+              ` : ''}
+
+              ${simpleCartEntry ? `
+                <div class="flex items-center bg-saffron text-white border-2 border-charcoal rounded-xl shadow-monsterSm overflow-hidden">
+                  <button onclick="updateCartItemQty('${simpleCartEntry.cartKey}', -1)" class="px-3 py-2 font-extrabold hover:bg-charcoal transition">−</button>
+                  <span class="px-2.5 font-display font-bold text-base">${simpleCartEntry.qty}</span>
+                  <button onclick="updateCartItemQty('${simpleCartEntry.cartKey}', 1)" class="px-3 py-2 font-extrabold hover:bg-charcoal transition">+</button>
+                </div>
+              ` : `
+                <button onclick="addToCart(MENU_ITEMS.find(i => i.id === '${item.id}'))" class="btn-monster bg-saffron hover:bg-saffronDark text-white font-display font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-1.5">
+                  <span>Add</span>
+                  <span class="text-lg leading-none">+</span>
+                </button>
+              `}
+            </div>
+          </div>
+          ${totalQty > 0 && !simpleCartEntry ? `<div class="bg-emerald-50 border-t border-emerald-200 px-5 py-1.5 text-[11px] font-bold text-sage text-center">${totalQty} customized item(s) in basket</div>` : ''}
+        </div>
+      `;
+    }
+
+    // -------------------- 9. PAGE VIEWS --------------------
+    function renderHomePage() {
+      const featuredPicks = MENU_ITEMS.filter(i => i.bestseller).slice(0, 4);
+
+      return `
+        <div class="space-y-16 page-enter">
+          <!-- HERO SECTION -->
+          <section class="bg-white border-3 border-charcoal rounded-[2.25rem] shadow-monster p-6 sm:p-10 lg:p-14 relative overflow-hidden">
+            <!-- Decorative Floating Blobs -->
+            <div class="absolute -top-16 -right-16 w-64 h-64 bg-mustard/25 rounded-full pointer-events-none"></div>
+            <div class="absolute -bottom-20 -left-16 w-72 h-72 bg-saffron/15 rounded-full pointer-events-none"></div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
+              <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 bg-creamDark border-2 border-charcoal px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold text-charcoal">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sage animate-pulse"></span>
+                  <span>Delivering Hot & Fresh in 28 Mins</span>
+                </div>
+
+                <h1 class="font-display text-4xl sm:text-6xl lg:text-7xl font-bold text-charcoal leading-[1.06]">
+                  Tame Your <span class="text-saffron underline decoration-mustard decoration-wavy decoration-4 underline-offset-8">Hunger Monster!</span>
+                </h1>
+
+                <p class="text-base sm:text-lg text-charcoal/80 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                  Gourmet smashed burgers, 48-hour fermented sourdough pizzas, royal desi bowls & decadent shakes crafted to satisfy your inner <strong>Bhookemon</strong>.
+                </p>
+
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+                  <button onclick="navigateTo('menu')" class="btn-monster bg-saffron hover:bg-saffronDark text-white font-display font-bold text-lg px-8 py-4 rounded-2xl flex items-center gap-2.5">
+                    <span>Explore Menu</span>
+                    <span>🍔</span>
+                  </button>
+                  <button onclick="navigateTo('deals')" class="btn-monster bg-mustard hover:bg-amber-400 text-charcoal font-display font-bold text-lg px-7 py-4 rounded-2xl flex items-center gap-2">
+                    <span>Squad Combos</span>
+                    <span>🔥</span>
+                  </button>
+                </div>
+
+                <!-- Trust Metrics -->
+                <div class="grid grid-cols-3 gap-4 pt-4 max-w-md mx-auto lg:mx-0 border-t-2 border-dashed border-charcoal/15">
+                  <div>
+                    <span class="font-display text-2xl sm:text-3xl font-bold text-charcoal block">4.9★</span>
+                    <span class="text-xs font-semibold text-charcoal/60">18k+ Happy Bellies</span>
+                  </div>
+                  <div>
+                    <span class="font-display text-2xl sm:text-3xl font-bold text-saffron block">28m</span>
+                    <span class="text-xs font-semibold text-charcoal/60">Avg. Express Delivery</span>
+                  </div>
+                  <div>
+                    <span class="font-display text-2xl sm:text-3xl font-bold text-sage block">100%</span>
+                    <span class="text-xs font-semibold text-charcoal/60">Artisan Ingredients</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mascot Hero Showcase -->
+              <div class="lg:col-span-5 flex flex-col items-center justify-center relative">
+                <div class="relative animate-float">
+                  ${getMascotSVG('happy', 'w-64 h-64 sm:w-80 sm:h-80')}
+                  <!-- Speech Bubble -->
+                  <div class="absolute -top-3 -left-4 sm:-left-8 bg-mustard border-2 border-charcoal shadow-monsterSm px-4 py-2 rounded-2xl -rotate-6">
+                    <span class="font-display font-bold text-sm sm:text-base text-charcoal">"Feed me truffle fries!" 🤤</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- QUICK CATEGORY PILLS -->
+          <section class="space-y-6">
+            <div class="flex items-end justify-between">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-widest text-saffron">What are you craving?</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold text-charcoal">Browse by Monster Mood</h2>
+              </div>
+              <button onclick="navigateTo('menu')" class="font-bold text-sm text-saffron hover:underline hidden sm:inline">View Full Menu →</button>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+              ${MENU_CATEGORIES.filter(c => c.id !== 'all').map(cat => `
+                <button onclick="state.menuCategory='${cat.id}'; navigateTo('menu')" class="card-monster bg-white hover:bg-mustard/25 p-5 rounded-3xl text-center flex flex-col items-center gap-2.5 group">
+                  <span class="text-4xl group-hover:scale-125 transition-transform">${cat.icon}</span>
+                  <span class="font-display font-bold text-sm sm:text-base text-charcoal leading-tight">${cat.name}</span>
+                </button>
+              `).join('')}
+            </div>
+          </section>
+
+          <!-- CHEF'S MONSTER PICKS -->
+          <section class="space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+              <div>
+                <span class="text-xs font-extrabold uppercase tracking-widest text-saffron">Most Ordered This Week</span>
+                <h2 class="font-display text-3xl sm:text-4xl font-bold text-charcoal">Chef's Monster Picks</h2>
+              </div>
+              <button onclick="navigateTo('menu')" class="btn-monster bg-charcoal text-cream px-5 py-2.5 rounded-xl font-display font-bold text-sm self-start">
+                See All ${MENU_ITEMS.length} Dishes →
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              ${featuredPicks.map(item => renderMenuItemCard(item)).join('')}
+            </div>
+          </section>
+
+          <!-- HOW BHOOKEMON WORKS -->
+          <section class="bg-creamDark border-3 border-charcoal rounded-[2rem] p-8 sm:p-10">
+            <div class="text-center max-w-xl mx-auto mb-10">
+              <h2 class="font-display text-3xl sm:text-4xl font-bold text-charcoal">3 Steps to Tame the Beast</h2>
+              <p class="text-sm text-charcoal/70 mt-1">From kitchen flame to your doorstep faster than your stomach can growl.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-white border-2 border-charcoal rounded-2xl p-6 shadow-monsterSm">
+                <div class="w-12 h-12 rounded-2xl bg-mustard border-2 border-charcoal font-display font-bold text-2xl flex items-center justify-center mb-4">1</div>
+                <h3 class="font-display text-xl font-bold mb-2">Pick Your Cravings</h3>
+                <p class="text-sm text-charcoal/75">Customize burgers, choose crust styles, or build a squad feast from our chef-curated menu.</p>
+              </div>
+              <div class="bg-white border-2 border-charcoal rounded-2xl p-6 shadow-monsterSm">
+                <div class="w-12 h-12 rounded-2xl bg-saffron text-white border-2 border-charcoal font-display font-bold text-2xl flex items-center justify-center mb-4">2</div>
+                <h3 class="font-display text-xl font-bold mb-2">1-Tap Bhookemon Pay</h3>
+                <p class="text-sm text-charcoal/75">Pay seamlessly via UPI QR, Credit/Debit Card, Net Banking, or Cash on Delivery.</p>
+              </div>
+              <div class="bg-white border-2 border-charcoal rounded-2xl p-6 shadow-monsterSm">
+                <div class="w-12 h-12 rounded-2xl bg-sage text-white border-2 border-charcoal font-display font-bold text-2xl flex items-center justify-center mb-4">3</div>
+                <h3 class="font-display text-xl font-bold mb-2">Track & Devour!</h3>
+                <p class="text-sm text-charcoal/75">Watch Bhookemon cook, pack, and zoom to your location in real time with live order tracking.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- TESTIMONIALS -->
+          <section class="space-y-6">
+            <h2 class="font-display text-3xl font-bold text-charcoal text-center">Word on the Hungry Street</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div class="bg-white border-2 border-charcoal rounded-3xl p-6 shadow-monsterSm space-y-3">
+                <div class="text-mustard text-lg">★★★★★</div>
+                <p class="text-sm text-charcoal/85 italic">"The Bhookemon Double Smash literally saved my Friday night. Crisp lacy edges, brioche bun wasn't soggy at all, and arrived in 24 minutes!"</p>
+                <div class="font-display font-bold text-sm text-charcoal">— Rohan Kulkarni, Bengaluru</div>
+              </div>
+              <div class="bg-white border-2 border-charcoal rounded-3xl p-6 shadow-monsterSm space-y-3">
+                <div class="text-mustard text-lg">★★★★★</div>
+                <p class="text-sm text-charcoal/85 italic">"Truffle Cheese Bombs + Mint Kala Khatta Fizz is an undefeated combo. Also obsessed with the cute monster mascot packaging!"</p>
+                <div class="font-display font-bold text-sm text-charcoal">— Meera Nair, Mumbai</div>
+              </div>
+              <div class="bg-white border-2 border-charcoal rounded-3xl p-6 shadow-monsterSm space-y-3">
+                <div class="text-mustard text-lg">★★★★★</div>
+                <p class="text-sm text-charcoal/85 italic">"Finally a delivery kitchen where the sourdough burrata pizza tastes straight out of a wood-fired Neapolitan oven."</p>
+                <div class="font-display font-bold text-sm text-charcoal">— Kabir Malhotra, Gurugram</div>
+              </div>
+            </div>
+          </section>
+        </div>
+      `;
+    }
+
+    function renderMenuPage() {
+      // Filter items
+      const filtered = MENU_ITEMS.filter(item => {
+        const matchesCat = state.menuCategory === 'all' || item.category === state.menuCategory;
+        const q = state.menuSearch.trim().toLowerCase();
+        const matchesSearch = !q || item.name.toLowerCase().includes(q) || item.description.toLowerCase().includes(q);
+        let matchesDiet = true;
+        if (state.dietaryFilter === 'veg') matchesDiet = item.veg === true;
+        if (state.dietaryFilter === 'nonveg') matchesDiet = item.veg === false;
+        if (state.dietaryFilter === 'bestseller') matchesDiet = item.bestseller === true;
+        if (state.dietaryFilter === 'spicy') matchesDiet = item.spicy === true;
+        return matchesCat && matchesSearch && matchesDiet;
+      });
+
+      return `
+        <div class="space-y-8 page-enter">
+          <!-- Menu Header & Search -->
+          <div class="bg-white border-3 border-charcoal rounded-3xl p-6 sm:p-8 shadow-monster flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-widest text-saffron">Freshly Crafted to Order</span>
+              <h1 class="font-display text-3xl sm:text-5xl font-bold text-charcoal mt-1">Bhookemon Gourmet Menu</h1>
+              <p class="text-sm text-charcoal/70 mt-1">Filter by dietary mood, customize add-ons, and build your feast.</p>
+            </div>
+
+            <!-- Live Search Bar -->
+            <div class="relative w-full lg:w-96">
+              <input
+                type="text"
+                value="${state.menuSearch}"
+                oninput="state.menuSearch = this.value; renderApp()"
+                placeholder="Search burgers, burrata, biryani..."
+                class="w-full pl-11 pr-10 py-3.5 rounded-2xl border-2 border-charcoal bg-cream font-medium text-sm focus:outline-none focus:ring-2 focus:ring-saffron"
+              />
+              <span class="absolute left-4 top-3.5 text-lg">🔍</span>
+              ${state.menuSearch ? `<button onclick="state.menuSearch=''; renderApp()" class="absolute right-3.5 top-3.5 text-xs font-bold bg-charcoal text-cream px-2 py-0.5 rounded-lg">Clear</button>` : ''}
+            </div>
+          </div>
+
+          <!-- Category Tabs (Horizontal Scroll on Mobile) -->
+          <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar pb-2">
+            ${MENU_CATEGORIES.map(cat => {
+              const active = state.menuCategory === cat.id;
+              return `
+                <button
+                  onclick="state.menuCategory='${cat.id}'; renderApp()"
+                  class="shrink-0 px-5 py-3 rounded-2xl border-2 border-charcoal font-display font-bold text-sm flex items-center gap-2 transition-all ${active ? 'bg-saffron text-white shadow-monsterSm -translate-y-0.5' : 'bg-white text-charcoal hover:bg-mustard/30'}"
+                >
+                  <span>${cat.icon}</span>
+                  <span>${cat.name}</span>
+                </button>
+              `;
+            }).join('')}
+          </div>
+
+          <!-- Dietary & Tag Filter Chips -->
+          <div class="flex flex-wrap items-center justify-between gap-4 bg-creamDark/80 p-3.5 rounded-2xl border-2 border-charcoal/15">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="text-xs font-extrabold uppercase tracking-wider text-charcoal/60 mr-1">Quick Filters:</span>
+              ${[
+                { id: 'all', label: 'All Items' },
+                { id: 'veg', label: '🟢 Pure Veg' },
+                { id: 'nonveg', label: '🔺 Non-Veg' },
+                { id: 'bestseller', label: '★ Bestsellers' },
+                { id: 'spicy', label: '🌶️ Spicy Kick' }
+              ].map(f => `
+                <button
+                  onclick="state.dietaryFilter='${f.id}'; renderApp()"
+                  class="px-3.5 py-1.5 rounded-xl text-xs font-bold border-2 transition ${state.dietaryFilter === f.id ? 'bg-charcoal text-cream border-charcoal' : 'bg-white text-charcoal border-charcoal/20 hover:border-charcoal'}"
+                >
+                  ${f.label}
+                </button>
+              `).join('')}
+            </div>
+            <span class="text-xs font-bold text-charcoal/70">Showing ${filtered.length} delicious dish${filtered.length === 1 ? '' : 'es'}</span>
+          </div>
+
+          <!-- Menu Grid -->
+          ${filtered.length > 0 ? `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              ${filtered.map(item => renderMenuItemCard(item)).join('')}
+            </div>
+          ` : `
+            <div class="bg-white border-2 border-charcoal rounded-3xl p-12 text-center space-y-4">
+              <div class="w-28 h-28 mx-auto">${getMascotSVG('sad', 'w-28 h-28')}</div>
+              <h3 class="font-display text-2xl font-bold text-charcoal">Bhookemon couldn't find that dish!</h3>
+              <p class="text-sm text-charcoal/70">Try clearing your search or switching dietary filters.</p>
+              <button onclick="state.menuCategory='all'; state.menuSearch=''; state.dietaryFilter='all'; renderApp()" class="btn-monster bg-mustard text-charcoal font-display font-bold px-6 py-2.5 rounded-xl">
+                Reset All Filters
+              </button>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderDealsPage() {
+      return `
+        <div class="space-y-12 page-enter">
+          <!-- Header Banner -->
+          <div class="bg-saffron text-white border-3 border-charcoal rounded-3xl p-8 sm:p-10 shadow-monster flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="space-y-3 text-center md:text-left">
+              <span class="inline-block bg-charcoal text-mustard text-xs font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">Feed The Squad & Save Big</span>
+              <h1 class="font-display text-4xl sm:text-5xl font-bold leading-tight">Monster Combos & Loot</h1>
+              <p class="text-white/90 text-sm sm:text-base max-w-xl">Curated multi-course boxes with up to 35% combo savings, plus stackable promo codes at checkout!</p>
+            </div>
+            <div class="shrink-0">
+              ${getMascotSVG('happy', 'w-36 h-36 sm:w-44 sm:h-44')}
+            </div>
+          </div>
+
+          <!-- Combo Deals Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-7">
+            ${COMBO_DEALS.map(deal => `
+              <div class="card-monster bg-white rounded-3xl overflow-hidden flex flex-col justify-between">
+                <div>
+                  <div class="${deal.color} p-5 border-b-2 border-charcoal flex items-center justify-between">
+                    <span class="bg-charcoal text-cream text-[11px] font-extrabold px-3 py-1 rounded-full tracking-wider">${deal.badge}</span>
+                    ${getVegBadge(deal.veg)}
+                  </div>
+                  <div class="p-6 space-y-4">
+                    <div>
+                      <h3 class="font-display text-2xl font-bold text-charcoal">${deal.title}</h3>
+                      <p class="text-xs font-semibold text-charcoal/60">${deal.subtitle}</p>
+                    </div>
+
+                    <ul class="space-y-2 bg-creamDark/70 p-4 rounded-2xl border border-charcoal/15">
+                      ${deal.itemsIncluded.map(inc => `
+                        <li class="text-sm font-semibold text-charcoal flex items-center gap-2">
+                          <span class="text-sage font-extrabold">✓</span>
+                          <span>${inc}</span>
+                        </li>
+                      `).join('')}
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="px-6 pb-6 pt-2 flex items-center justify-between border-t border-charcoal/10">
+                  <div>
+                    <span class="text-xs text-charcoal/50 line-through font-bold">₹${deal.originalPrice}</span>
+                    <div class="flex items-baseline gap-2">
+                      <span class="font-display text-3xl font-bold text-charcoal">₹${deal.price}</span>
+                      <span class="text-xs font-extrabold text-sage">SAVE ₹${deal.originalPrice - deal.price}</span>
+                    </div>
+                  </div>
+                  <button onclick='addToCart(${JSON.stringify(deal.cartItem)})' class="btn-monster bg-saffron text-white font-display font-bold px-5 py-3 rounded-2xl text-sm">
+                    Add Combo +
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+
+          <!-- Promo Code Coupons Vault -->
+          <div class="space-y-5">
+            <h2 class="font-display text-3xl font-bold text-charcoal">Tap to Copy & Apply Promo Codes</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+              ${Object.entries(PROMO_CODES).map(([code, info]) => `
+                <div class="bg-white border-2 border-dashed border-charcoal rounded-3xl p-6 flex flex-col justify-between gap-4 relative overflow-hidden">
+                  <div class="flex items-center justify-between">
+                    <span class="font-display text-2xl font-bold text-saffron bg-creamDark px-3.5 py-1 rounded-xl border border-charcoal/20">${code}</span>
+                    <button onclick="copyPromoCode('${code}')" class="btn-monster bg-mustard text-charcoal font-display font-bold text-xs px-4 py-2 rounded-xl">
+                      ${state.appliedPromo === code ? '✓ Applied' : 'Copy & Apply'}
+                    </button>
+                  </div>
+                  <p class="text-sm font-semibold text-charcoal/80">${info.desc}</p>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCheckoutPage() {
+      const totals = getCartTotals();
+
+      if (state.cart.length === 0) {
+        return `
+          <div class="max-w-xl mx-auto bg-white border-3 border-charcoal rounded-3xl p-10 text-center shadow-monster space-y-5 page-enter">
+            <div class="w-32 h-32 mx-auto">${getMascotSVG('hungry', 'w-32 h-32')}</div>
+            <h2 class="font-display text-3xl font-bold text-charcoal">Nothing to Checkout Yet!</h2>
+            <p class="text-sm text-charcoal/70">Add your favorite dishes to the basket first, then return here to complete your order via Bhookemon Pay.</p>
+            <button onclick="navigateTo('menu')" class="btn-monster bg-saffron text-white font-display font-bold px-8 py-3.5 rounded-2xl text-base">
+              Browse Menu
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="space-y-8 page-enter">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-xs font-extrabold uppercase tracking-widest text-saffron">Step 2 of 2 • Fast & Secure</span>
+              <h1 class="font-display text-3xl sm:text-4xl font-bold text-charcoal">Checkout & Payment</h1>
+            </div>
+            <button onclick="navigateTo('menu')" class="text-sm font-bold text-saffron hover:underline">← Add More Items</button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Left Column: Delivery Details & Order Items -->
+            <div class="lg:col-span-7 space-y-6">
+              
+              <!-- Delivery Address Card -->
+              <div class="bg-white border-3 border-charcoal rounded-3xl p-6 sm:p-7 shadow-monsterSm space-y-5">
+                <div class="flex flex-wrap items-center justify-between gap-2 border-b-2 border-charcoal/10 pb-3">
+                  <h2 class="font-display text-2xl font-bold text-charcoal flex items-center gap-2">
+                    <span>📍</span>
+                    <span>Delivery Address</span>
+                  </h2>
+                  <button onclick="fillDemoAddress()" class="text-xs font-bold bg-creamDark hover:bg-mustard border border-charcoal px-3 py-1.5 rounded-xl transition">
+                    ✨ Auto-Fill Demo Address
+                  </button>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs font-bold uppercase text-charcoal/70 mb-1">Full Name *</label>
+                    <input id="cust-name" type="text" value="${state.customerDetails.name}" oninput="updateCustField('name', this.value)" class="w-full px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase text-charcoal/70 mb-1">Mobile Number *</label>
+                    <input id="cust-phone" type="text" value="${state.customerDetails.phone}" oninput="updateCustField('phone', this.value)" class="w-full px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-bold uppercase text-charcoal/70 mb-1">Complete Street Address *</label>
+                    <input id="cust-address" type="text" value="${state.customerDetails.address}" oninput="updateCustField('address', this.value)" class="w-full px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase text-charcoal/70 mb-1">Landmark</label>
+                    <input id="cust-landmark" type="text" value="${state.customerDetails.landmark}" oninput="updateCustField('landmark', this.value)" class="w-full px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                  <div>
+                    <label class="block text-xs font-bold uppercase text-charcoal/70 mb-1">City & Pincode *</label>
+                    <input id="cust-city" type="text" value="${state.customerDetails.city}" oninput="updateCustField('city', this.value)" class="w-full px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Review Basket Items -->
+              <div class="bg-white border-3 border-charcoal rounded-3xl p-6 sm:p-7 shadow-monsterSm space-y-4">
+                <h2 class="font-display text-2xl font-bold text-charcoal flex items-center gap-2">
+                  <span>🍔</span>
+                  <span>Review Basket (${totals.itemCount} items)</span>
+                </h2>
+                <div class="divide-y divide-charcoal/10">
+                  ${state.cart.map(item => `
+                    <div class="py-3.5 flex items-center justify-between gap-4">
+                      <div class="flex items-start gap-3">
+                        ${getVegBadge(item.veg)}
+                        <div>
+                          <h4 class="font-display font-bold text-base text-charcoal">${item.name}</h4>
+                          ${item.addons && item.addons.length ? `<p class="text-xs text-charcoal/60">+ ${item.addons.map(a => a.name).join(', ')}</p>` : ''}
+                          <span class="text-xs font-bold text-charcoal/60">₹${item.price} each</span>
+                        </div>
+                      </div>
+                      <div class="flex items-center gap-4">
+                        <div class="flex items-center bg-creamDark border-2 border-charcoal rounded-xl overflow-hidden">
+                          <button onclick="updateCartItemQty('${item.cartKey}', -1)" class="px-2.5 py-1 font-extrabold hover:bg-saffron hover:text-white transition">−</button>
+                          <span class="px-2.5 font-display font-bold text-sm">${item.qty}</span>
+                          <button onclick="updateCartItemQty('${item.cartKey}', 1)" class="px-2.5 py-1 font-extrabold hover:bg-saffron hover:text-white transition">+</button>
+                        </div>
+                        <span class="font-display font-bold text-lg text-charcoal w-16 text-right">₹${item.price * item.qty}</span>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Promo, Rider Tip & Bill Summary -->
+            <div class="lg:col-span-5 space-y-6 lg:sticky lg:top-24">
+              <div class="bg-white border-3 border-charcoal rounded-3xl p-6 sm:p-7 shadow-monster space-y-5">
+                <h2 class="font-display text-2xl font-bold text-charcoal">Bill & Offers</h2>
+
+                <!-- Promo Code Input -->
+                <div class="bg-creamDark p-3.5 rounded-2xl border-2 border-charcoal/15 space-y-2">
+                  <div class="flex gap-2">
+                    <input
+                      id="checkout-promo-input"
+                      type="text"
+                      value="${state.appliedPromo}"
+                      placeholder="Enter code (e.g. BHOOK100)"
+                      class="flex-grow px-3.5 py-2 rounded-xl border-2 border-charcoal bg-white text-sm font-bold uppercase focus:outline-none"
+                    />
+                    <button onclick="applyCheckoutPromo()" class="btn-monster bg-charcoal text-cream font-display font-bold text-xs px-4 py-2 rounded-xl">
+                      Apply
+                    </button>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5 pt-1">
+                    ${Object.keys(PROMO_CODES).map(c => `
+                      <button onclick="document.getElementById('checkout-promo-input').value='${c}'; applyCheckoutPromo()" class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-white border border-charcoal/30 hover:border-saffron">
+                        ${c}
+                      </button>
+                    `).join('')}
+                  </div>
+                  ${state.appliedPromo && totals.discount > 0 ? `<p class="text-xs font-bold text-sage">🎉 Promo "${state.appliedPromo}" applied! You saved ₹${totals.discount}.</p>` : ''}
+                  ${state.appliedPromo && totals.discount === 0 ? `<p class="text-xs font-bold text-berry">⚠️ Minimum order ₹${PROMO_CODES[state.appliedPromo]?.minOrder || 0} required for ${state.appliedPromo}.</p>` : ''}
+                </div>
+
+                <!-- Delivery Rider Tip -->
+                <div>
+                  <span class="text-xs font-bold uppercase text-charcoal/70 block mb-2">🛵 Tip your Monster Delivery Rider</span>
+                  <div class="grid grid-cols-4 gap-2">
+                    ${[0, 20, 30, 50].map(tipVal => `
+                      <button
+                        onclick="state.deliveryTip=${tipVal}; renderApp()"
+                        class="py-2 rounded-xl border-2 font-display font-bold text-sm transition ${state.deliveryTip === tipVal ? 'bg-mustard border-charcoal text-charcoal shadow-monsterSm' : 'bg-cream border-charcoal/25 text-charcoal/80 hover:border-charcoal'}"
+                      >
+                        ${tipVal === 0 ? 'None' : `₹${tipVal}`}
+                      </button>
+                    `).join('')}
+                  </div>
+                </div>
+
+                <!-- Itemized Breakdown -->
+                <div class="space-y-2.5 pt-3 border-t-2 border-dashed border-charcoal/20 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-charcoal/75">Item Subtotal</span>
+                    <span class="font-bold">₹${totals.subtotal}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-charcoal/75">Delivery Partner Fee</span>
+                    <span class="font-bold ${totals.deliveryFee === 0 ? 'text-sage' : ''}">${totals.deliveryFee === 0 ? 'FREE' : `₹${totals.deliveryFee}`}</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-charcoal/75">Eco-Packaging Fee</span>
+                    <span class="font-bold">₹${totals.packagingFee}</span>
+                  </div>
+                  ${totals.discount > 0 ? `
+                    <div class="flex justify-between text-sage font-bold">
+                      <span>Monster Promo Discount</span>
+                      <span>− ₹${totals.discount}</span>
+                    </div>
+                  ` : ''}
+                  <div class="flex justify-between">
+                    <span class="text-charcoal/75">GST & Restaurant Charges (5%)</span>
+                    <span class="font-bold">₹${totals.gst}</span>
+                  </div>
+                  ${totals.tip > 0 ? `
+                    <div class="flex justify-between">
+                      <span class="text-charcoal/75">Rider Tip</span>
+                      <span class="font-bold">₹${totals.tip}</span>
+                    </div>
+                  ` : ''}
+
+                  <div class="flex justify-between items-center pt-3 border-t-2 border-charcoal text-lg">
+                    <span class="font-display font-bold text-charcoal">To Pay</span>
+                    <span class="font-display text-3xl font-bold text-saffron">₹${totals.grandTotal}</span>
+                  </div>
+                </div>
+
+                <!-- Launch Payment Gateway CTA -->
+                <button onclick="openPaymentGateway()" class="btn-monster w-full py-4 rounded-2xl bg-saffron hover:bg-saffronDark text-white font-display font-bold text-xl flex items-center justify-center gap-3">
+                  <span>🔒 Pay ₹${totals.grandTotal} Securely</span>
+                </button>
+                <p class="text-[11px] text-center text-charcoal/60 font-medium">
+                  Supports UPI (GPay / PhonePe / Paytm), Cards, NetBanking & COD
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateCustField(field, val) {
+      state.customerDetails[field] = val;
+      localStorage.setItem('bhookemon_customer', JSON.stringify(state.customerDetails));
+    }
+
+    function fillDemoAddress() {
+      state.customerDetails = {
+        name: 'Priya Deshmukh',
+        phone: '+91 98201 55432',
+        email: 'priya.foodie@example.com',
+        address: 'B-14, Emerald Residency, Linking Road, Bandra West',
+        landmark: 'Opposite Pali Hill Cafe',
+        city: 'Mumbai - 400050',
+        instructions: 'Please include extra chilli flakes & oregano!'
+      };
+      localStorage.setItem('bhookemon_customer', JSON.stringify(state.customerDetails));
+      showToast('Demo address filled!');
+      renderApp();
+    }
+
+    function applyCheckoutPromo() {
+      const code = document.getElementById('checkout-promo-input').value.trim().toUpperCase();
+      if (!code) {
+        state.appliedPromo = '';
+        localStorage.removeItem('bhookemon_promo');
+        renderApp();
+        return;
+      }
+      if (!PROMO_CODES[code]) {
+        showToast('Invalid promo code. Try BHOOK100 or MONSTER20!', 'error');
+        return;
+      }
+      state.appliedPromo = code;
+      localStorage.setItem('bhookemon_promo', code);
+      showToast(`Promo code "${code}" applied!`);
+      renderApp();
+    }
+
+    // -------------------- 10. WORKING SIMULATED PAYMENT GATEWAY --------------------
+    function openPaymentGateway() {
+      if (!state.customerDetails.name.trim() || !state.customerDetails.address.trim() || !state.customerDetails.phone.trim()) {
+        showToast('Please fill in your name, phone, and delivery address first!', 'error');
+        return;
+      }
+
+      const totals = getCartTotals();
+      state.pgStep = 'method';
+      document.getElementById('pg-amount-display').textContent = `₹${totals.grandTotal}`;
+      document.getElementById('pg-merchant-sub').textContent = `Bhookemon Culinary Labs • ${totals.itemCount} Item(s)`;
+
+      const modal = document.getElementById('payment-gateway-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      renderPaymentGatewayBody();
+    }
+
+    function closePaymentGateway() {
+      const modal = document.getElementById('payment-gateway-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderPaymentGatewayBody() {
+      const body = document.getElementById('pg-body');
+      const totals = getCartTotals();
+
+      if (state.pgStep === 'processing') {
+        body.innerHTML = `
+          <div class="py-12 text-center space-y-5 page-enter">
+            <div class="w-28 h-28 mx-auto animate-bounce">
+              ${getMascotSVG('happy', 'w-28 h-28')}
+            </div>
+            <h3 class="font-display text-2xl font-bold text-charcoal">Feeding your order to Bhookemon...</h3>
+            <p class="text-sm text-charcoal/70 max-w-sm mx-auto">Verifying payment authorization with your bank. Please do not close or refresh this window.</p>
+            <div class="w-56 h-3 bg-creamDark rounded-full mx-auto overflow-hidden border border-charcoal">
+              <div class="h-full bg-saffron animate-pulse w-full"></div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      if (state.pgStep === 'otp') {
+        body.innerHTML = `
+          <div class="py-6 max-w-md mx-auto space-y-5 page-enter">
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <span class="text-xs font-extrabold text-blue-800 uppercase block">3D Secure Bank Verification</span>
+                <span class="text-xs text-blue-700">OTP sent to ${state.customerDetails.phone}</span>
+              </div>
+              <span class="text-2xl">🔐</span>
+            </div>
+
+            <div class="space-y-2">
+              <label class="text-xs font-bold uppercase text-charcoal/70 block">Enter 6-Digit Bank OTP (Demo: 482910)</label>
+              <input id="pg-otp-input" type="text" maxlength="6" value="482910" class="w-full text-center tracking-[0.5em] font-display text-2xl font-bold py-3 rounded-2xl border-2 border-charcoal bg-cream focus:outline-none focus:ring-2 focus:ring-saffron" />
+            </div>
+
+            <div class="flex gap-3">
+              <button onclick="state.pgStep='method'; renderPaymentGatewayBody()" class="px-5 py-3 rounded-2xl border-2 border-charcoal font-bold text-sm">
+                ← Back
+              </button>
+              <button onclick="finalizeSimulatedPayment()" class="btn-monster flex-grow bg-sage text-white font-display font-bold py-3 rounded-2xl text-base">
+                Verify & Pay ₹${totals.grandTotal}
+              </button>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Default: Payment Method Tabs
+      body.innerHTML = `
+        <div class="space-y-5">
+          <!-- Method Tabs -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-creamDark p-1.5 rounded-2xl border-2 border-charcoal/15">
+            ${[
+              { id: 'upi', label: '📱 UPI / QR' },
+              { id: 'card', label: '💳 Card' },
+              { id: 'netbanking', label: '🏦 NetBanking' },
+              { id: 'cod', label: '💵 Cash (COD)' }
+            ].map(tab => `
+              <button
+                onclick="state.pgTab='${tab.id}'; renderPaymentGatewayBody()"
+                class="py-2.5 px-3 rounded-xl font-display font-bold text-xs sm:text-sm transition ${state.pgTab === tab.id ? 'bg-charcoal text-cream shadow-xs' : 'text-charcoal hover:bg-white/70'}"
+              >
+                ${tab.label}
+              </button>
+            `).join('')}
+          </div>
+
+          <!-- Tab Content -->
+          <div class="min-h-[240px]">
+            ${state.pgTab === 'upi' ? `
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center bg-cream/60 p-5 rounded-2xl border-2 border-charcoal/15">
+                <div class="flex flex-col items-center text-center bg-white p-4 rounded-2xl border-2 border-charcoal">
+                  <span class="text-[11px] font-extrabold uppercase tracking-wider text-saffron mb-2">Scan with any UPI App</span>
+                  <!-- Stylized SVG QR Code -->
+                  <svg viewBox="0 0 120 120" class="w-36 h-36 border-2 border-charcoal p-2 rounded-xl bg-white">
+                    <rect x="8" y="8" width="30" height="30" fill="none" stroke="#1E1B18" stroke-width="6"/>
+                    <rect x="16" y="16" width="14" height="14" fill="#1E1B18"/>
+                    <rect x="82" y="8" width="30" height="30" fill="none" stroke="#1E1B18" stroke-width="6"/>
+                    <rect x="90" y="16" width="14" height="14" fill="#1E1B18"/>
+                    <rect x="8" y="82" width="30" height="30" fill="none" stroke="#1E1B18" stroke-width="6"/>
+                    <rect x="16" y="90" width="14" height="14" fill="#1E1B18"/>
+                    <rect x="48" y="12" width="10" height="10" fill="#1E1B18"/>
+                    <rect x="64" y="24" width="10" height="18" fill="#1E1B18"/>
+                    <rect x="12" y="48" width="22" height="10" fill="#1E1B18"/>
+                    <rect x="48" y="48" width="24" height="24" rx="4" fill="#FF6B2B"/>
+                    <rect x="82" y="52" width="12" height="24" fill="#1E1B18"/>
+                    <rect x="52" y="84" width="16" height="12" fill="#1E1B18"/>
+                    <rect x="80" y="88" width="28" height="16" fill="#1E1B18"/>
+                  </svg>
+                  <div class="flex items-center gap-2 mt-2.5 text-[11px] font-bold text-charcoal/70">
+                    <span>GPay</span> • <span>PhonePe</span> • <span>Paytm</span>
+                  </div>
+                </div>
+
+                <div class="space-y-4">
+                  <div>
+                    <label class="text-xs font-bold uppercase text-charcoal/70 block mb-1">Or Enter UPI ID / VPA</label>
+                    <input id="pg-upi-input" type="text" value="${state.upiId}" oninput="state.upiId=this.value" placeholder="yourname@okicici" class="w-full px-3.5 py-2.5 rounded-xl border-2 border-charcoal bg-white text-sm font-bold focus:outline-none focus:ring-2 focus:ring-saffron" />
+                  </div>
+                  <button onclick="triggerGatewayAuth('UPI (${state.upiId})')" class="btn-monster w-full bg-saffron text-white font-display font-bold py-3 rounded-xl text-base">
+                    Verify & Pay ₹${totals.grandTotal}
+                  </button>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.pgTab === 'card' ? `
+              <div class="grid grid-cols-1 sm:grid-cols-12 gap-5 items-center">
+                <!-- Interactive 3D Flipping Card Preview -->
+                <div class="sm:col-span-6 perspective-1000 h-44">
+                  <div id="visual-credit-card" class="card-inner ${state.cardDetails.flipped ? 'is-flipped' : ''}">
+                    <!-- Front -->
+                    <div class="card-face bg-gradient-to-br from-charcoal via-charcoalLight to-saffronDark text-cream p-5 border-2 border-charcoal flex flex-col justify-between shadow-md">
+                      <div class="flex justify-between items-center">
+                        <span class="w-9 h-6 rounded-md bg-mustard/90 border border-charcoal/40 inline-block"></span>
+                        <span class="font-display font-bold text-sm tracking-wider text-mustard">BHOOKEMON PLATINUM</span>
+                      </div>
+                      <div id="card-preview-num" class="font-mono text-base sm:text-lg tracking-widest font-bold">
+                        ${state.cardDetails.rawNumber || '4532 •••• •••• 8894'}
+                      </div>
+                      <div class="flex justify-between items-end text-xs">
+                        <div>
+                          <span class="text-[9px] uppercase text-cream/60 block">Card Holder</span>
+                          <span id="card-preview-holder" class="font-bold uppercase">${state.cardDetails.holder || 'AARAV SHARMA'}</span>
+                        </div>
+                        <div>
+                          <span class="text-[9px] uppercase text-cream/60 block">Expires</span>
+                          <span id="card-preview-exp" class="font-bold">${state.cardDetails.expiry || '09/29'}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Back -->
+                    <div class="card-face card-back bg-charcoal text-cream border-2 border-charcoal flex flex-col justify-between py-5 shadow-md">
+                      <div class="w-full h-9 bg-black"></div>
+                      <div class="px-5 space-y-1">
+                        <span class="text-[10px] uppercase text-cream/60 block text-right">CVV</span>
+                        <div class="bg-white text-charcoal font-mono font-bold text-right px-3 py-1.5 rounded-md">
+                          ${state.cardDetails.cvv || '•••'}
+                        </div>
+                      </div>
+                      <p class="px-5 text-[10px] text-cream/50">Protected by Bhookemon 3D-Secure Shield</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card Form Inputs -->
+                <div class="sm:col-span-6 space-y-3">
+                  <div>
+                    <label class="text-[11px] font-bold uppercase text-charcoal/70 block">Card Number</label>
+                    <input
+                      type="text"
+                      maxlength="19"
+                      placeholder="4532 1100 9821 8894"
+                      value="${state.cardDetails.rawNumber}"
+                      onfocus="flipCardPreview(false)"
+                      oninput="formatCardInput(this)"
+                      class="w-full px-3 py-2 rounded-xl border-2 border-charcoal bg-cream text-sm font-mono font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label class="text-[11px] font-bold uppercase text-charcoal/70 block">Name on Card</label>
+                    <input
+                      type="text"
+                      value="${state.cardDetails.holder}"
+                      onfocus="flipCardPreview(false)"
+                      oninput="state.cardDetails.holder=this.value.toUpperCase(); document.getElementById('card-preview-holder').textContent=state.cardDetails.holder || 'YOUR NAME'"
+                      class="w-full px-3 py-2 rounded-xl border-2 border-charcoal bg-cream text-sm font-bold uppercase"
+                    />
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <label class="text-[11px] font-bold uppercase text-charcoal/70 block">Expiry (MM/YY)</label>
+                      <input
+                        type="text"
+                        maxlength="5"
+                        value="${state.cardDetails.expiry}"
+                        onfocus="flipCardPreview(false)"
+                        oninput="state.cardDetails.expiry=this.value; document.getElementById('card-preview-exp').textContent=this.value || 'MM/YY'"
+                        class="w-full px-3 py-2 rounded-xl border-2 border-charcoal bg-cream text-sm font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label class="text-[11px] font-bold uppercase text-charcoal/70 block">CVV</label>
+                      <input
+                        type="password"
+                        maxlength="3"
+                        placeholder="123"
+                        value="${state.cardDetails.cvv}"
+                        onfocus="flipCardPreview(true)"
+                        onblur="flipCardPreview(false)"
+                        oninput="state.cardDetails.cvv=this.value"
+                        class="w-full px-3 py-2 rounded-xl border-2 border-charcoal bg-cream text-sm font-bold"
+                      />
+                    </div>
+                  </div>
+                  <button onclick="triggerGatewayAuth('Credit/Debit Card', true)" class="btn-monster w-full bg-saffron text-white font-display font-bold py-2.5 rounded-xl text-base">
+                    Pay ₹${totals.grandTotal} →
+                  </button>
+                </div>
+              </div>
+            ` : ''}
+
+            ${state.pgTab === 'netbanking' ? `
+              <div class="space-y-4 bg-cream/60 p-5 rounded-2xl border-2 border-charcoal/15">
+                <span class="text-xs font-bold uppercase text-charcoal/70 block">Select Popular Indian Bank</span>
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  {['HDFC Bank', 'ICICI Bank', 'State Bank of India', 'Axis Bank', 'Kotak Mahindra', 'Yes Bank'].map(bank => \`
+                    <button
+                      onclick="state.selectedBank='\${bank}'; renderPaymentGatewayBody()"
+                      class="p-3 rounded-xl border-2 text-left font-bold text-xs transition \${state.selectedBank === bank ? 'bg-mustard border-charcoal text-charcoal shadow-monsterSm' : 'bg-white border-charcoal/20 hover:border-charcoal'}"
+                    >
+                      🏦 \${bank}
+                    </button>
+                  \`).join('')}
+                </div>
+                <button onclick="triggerGatewayAuth('NetBanking (' + state.selectedBank + ')', true)" class="btn-monster w-full bg-saffron text-white font-display font-bold py-3 rounded-xl text-base">
+                  Proceed to \${state.selectedBank} • ₹\${totals.grandTotal}
+                </button>
+              </div>
+            ` : ''}
+
+            ${state.pgTab === 'cod' ? `
+              <div class="bg-amber-50 p-6 rounded-2xl border-2 border-charcoal/20 text-center space-y-4">
+                <div class="text-4xl">🛵💵</div>
+                <h4 class="font-display text-xl font-bold text-charcoal">Pay Cash or UPI on Delivery</h4>
+                <p class="text-xs sm:text-sm text-charcoal/75 max-w-md mx-auto">
+                  Keep exact change handy or scan our rider's dynamic QR code when Bhookemon arrives at your doorstep!
+                </p>
+                <button onclick="triggerGatewayAuth('Cash on Delivery', false)" class="btn-monster bg-sage text-white font-display font-bold px-8 py-3.5 rounded-2xl text-base">
+                  Place COD Order • ₹${totals.grandTotal}
+                </button>
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Gateway Footer -->
+          <div class="pt-3 border-t border-charcoal/15 flex items-center justify-between text-xs text-charcoal/60">
+            <span>Powered by <strong>Bhookemon Pay</strong> • PCI-DSS Compliant</span>
+            <button onclick="closePaymentGateway()" class="font-bold text-berry hover:underline">Cancel Payment</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function flipCardPreview(isFlipped) {
+      state.cardDetails.flipped = isFlipped;
+      const el = document.getElementById('visual-credit-card');
+      if (el) {
+        if (isFlipped) el.classList.add('is-flipped');
+        else el.classList.remove('is-flipped');
+      }
+    }
+
+    function formatCardInput(input) {
+      let digits = input.value.replace(/\D/g, '').substring(0, 16);
+      let formatted = digits.replace(/(.{4})/g, '$1 ').trim();
+      input.value = formatted;
+      state.cardDetails.rawNumber = formatted;
+      const preview = document.getElementById('card-preview-num');
+      if (preview) preview.textContent = formatted || '4532 •••• •••• 8894';
+    }
+
+    function triggerGatewayAuth(paymentMethodLabel, requiresOtp = false) {
+      state.pendingPaymentMethod = paymentMethodLabel;
+      if (requiresOtp) {
+        state.pgStep = 'otp';
+        renderPaymentGatewayBody();
+      } else {
+        finalizeSimulatedPayment();
+      }
+    }
+
+    function finalizeSimulatedPayment() {
+      state.pgStep = 'processing';
+      renderPaymentGatewayBody();
+
+      setTimeout(() => {
+        const totals = getCartTotals();
+        const orderId = 'BHK-' + Math.floor(100000 + Math.random() * 900000);
+        const newOrder = {
+          id: orderId,
+          createdAt: Date.now(),
+          dateFormatted: new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' }),
+          items: [...state.cart],
+          totals,
+          customer: { ...state.customerDetails },
+          paymentMethod: state.pendingPaymentMethod || 'UPI Instant',
+          transactionId: 'TXN' + Date.now().toString().slice(-8)
+        };
+
+        state.orders.unshift(newOrder);
+        state.activeOrderId = orderId;
+        state.cart = [];
+        state.appliedPromo = '';
+        localStorage.removeItem('bhookemon_promo');
+        saveCart();
+        saveOrders();
+
+        closePaymentGateway();
+        showToast(`🎉 Order ${orderId} confirmed! Bhookemon is firing up the grill!`);
+        navigateTo('track');
+      }, 1700);
+    }
+
+    // -------------------- 11. LIVE ORDER TRACKER & PAST ORDERS PAGE --------------------
+    function getOrderLiveStage(order) {
+      // Progresses smoothly over 60 seconds for interactive demo, or allows manual fast-forward
+      const elapsedSec = Math.floor((Date.now() - order.createdAt) / 1000);
+      if (order.forcedStage !== undefined) return order.forcedStage;
+      if (elapsedSec < 12) return 0; // Order Confirmed
+      if (elapsedSec < 28) return 1; // Bhookemon is Cooking
+      if (elapsedSec < 48) return 2; // Out for Delivery
+      return 3; // Delivered
+    }
+
+    function advanceDemoOrderStage(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      const cur = getOrderLiveStage(ord);
+      ord.forcedStage = Math.min(3, cur + 1);
+      saveOrders();
+      renderApp();
+    }
+
+    function reorderPastOrder(orderId) {
+      const ord = state.orders.find(o => o.id === orderId);
+      if (!ord) return;
+      ord.items.forEach(item => {
+        const existing = state.cart.find(c => c.cartKey === item.cartKey);
+        if (existing) existing.qty += item.qty;
+        else state.cart.push({ ...item });
+      });
+      saveCart();
+      showToast(`Added all items from ${orderId} back to your basket!`);
+      toggleCartDrawer(true);
+    }
+
+    function renderTrackPage() {
+      const activeOrder = state.orders.find(o => o.id === state.activeOrderId) || state.orders[0];
+
+      const stages = [
+        { title: 'Order Confirmed', desc: 'Kitchen received your feast & locked ingredients.', icon: '✅' },
+        { title: 'Bhookemon is Cooking', desc: 'Smashing patties, tossing sauces & baking fresh!', icon: '👨‍🍳' },
+        { title: 'Out for Delivery', desc: 'Rider Arjun is zooming toward your doorstep.', icon: '🛵' },
+        { title: 'Arrived & Devoured!', desc: 'Bon Appétit! Hope your hunger monster is tamed.', icon: '🎉' }
+      ];
+
+      return `
+        <div class="space-y-10 page-enter">
+          <div>
+            <span class="text-xs font-extrabold uppercase tracking-widest text-saffron">Real-Time Kitchen Telemetry</span>
+            <h1 class="font-display text-3xl sm:text-5xl font-bold text-charcoal">Live Order Tracker</h1>
+          </div>
+
+          ${activeOrder ? (() => {
+            const currentStage = getOrderLiveStage(activeOrder);
+            return `
+              <div id="printable-receipt" class="bg-white border-3 border-charcoal rounded-3xl p-6 sm:p-8 shadow-monster space-y-8">
+                <!-- Top Order Banner -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b-2 border-charcoal/15">
+                  <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-2xl bg-mustard border-2 border-charcoal flex items-center justify-center text-3xl animate-bounce">
+                      ${stages[currentStage].icon}
+                    </div>
+                    <div>
+                      <div class="flex flex-wrap items-center gap-2">
+                        <span class="font-display text-2xl font-bold text-charcoal">Order #${activeOrder.id}</span>
+                        <span class="bg-emerald-100 text-sage border border-sage px-2.5 py-0.5 rounded-full text-xs font-extrabold">PAID • ${activeOrder.paymentMethod}</span>
+                      </div>
+                      <p class="text-xs sm:text-sm text-charcoal/70 mt-0.5">Placed on ${activeOrder.dateFormatted} • Txn: ${activeOrder.transactionId}</p>
+                    </div>
+                  </div>
+
+                  <div class="flex flex-wrap items-center gap-2.5">
+                    ${currentStage < 3 ? `
+                      <button onclick="advanceDemoOrderStage('${activeOrder.id}')" class="btn-monster bg-mustard text-charcoal font-display font-bold text-xs px-4 py-2.5 rounded-xl">
+                        ⚡ Fast-Forward Status
+                      </button>
+                    ` : ''}
+                    <button onclick="window.print()" class="px-4 py-2.5 rounded-xl border-2 border-charcoal bg-cream hover:bg-charcoal hover:text-cream font-bold text-xs transition">
+                      🖨️ Print Receipt
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Animated 4-Step Progress Timeline -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  ${stages.map((st, idx) => {
+                    const done = idx <= currentStage;
+                    const active = idx === currentStage;
+                    return `
+                      <div class="p-4 rounded-2xl border-2 transition-all ${active ? 'bg-saffron text-white border-charcoal shadow-monsterSm scale-[1.02]' : done ? 'bg-emerald-50 border-sage text-charcoal' : 'bg-creamDark/60 border-charcoal/15 text-charcoal/50'}">
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-2xl">${st.icon}</span>
+                          <span class="text-[11px] font-extrabold uppercase px-2 py-0.5 rounded-full ${active ? 'bg-charcoal text-mustard' : done ? 'bg-sage text-white' : 'bg-charcoal/10'}">
+                            ${active ? 'Active' : done ? 'Done' : 'Pending'}
+                          </span>
+                        </div>
+                        <h4 class="font-display font-bold text-base">${st.title}</h4>
+                        <p class="text-xs mt-1 ${active ? 'text-white/90' : 'text-charcoal/70'}">${st.desc}</p>
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+
+                <!-- Receipt Details Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                  <div class="bg-creamDark/70 p-5 rounded-2xl border border-charcoal/15 space-y-2">
+                    <h4 class="font-display font-bold text-base text-charcoal">📍 Delivering To</h4>
+                    <p class="text-sm font-bold text-charcoal">${activeOrder.customer.name} (${activeOrder.customer.phone})</p>
+                    <p class="text-xs text-charcoal/80">${activeOrder.customer.address}, ${activeOrder.customer.landmark}</p>
+                    <p class="text-xs font-semibold text-charcoal/70">${activeOrder.customer.city}</p>
+                  </div>
+
+                  <div class="bg-creamDark/70 p-5 rounded-2xl border border-charcoal/15 space-y-2">
+                    <h4 class="font-display font-bold text-base text-charcoal">🧾 Order Summary</h4>
+                    <div class="space-y-1 text-xs">
+                      ${activeOrder.items.map(i => `
+                        <div class="flex justify-between font-semibold">
+                          <span>${i.qty} × ${i.name}</span>
+                          <span>₹${i.price * i.qty}</span>
+                        </div>
+                      `).join('')}
+                    </div>
+                    <div class="pt-2 border-t border-charcoal/15 flex justify-between font-display font-bold text-base text-saffron">
+                      <span>Total Paid</span>
+                      <span>₹${activeOrder.totals.grandTotal}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          })() : `
+            <div class="bg-white border-3 border-charcoal rounded-3xl p-10 text-center shadow-monster space-y-4">
+              <div class="w-28 h-28 mx-auto">${getMascotSVG('happy', 'w-28 h-28')}</div>
+              <h3 class="font-display text-2xl font-bold text-charcoal">No Active Orders Right Now</h3>
+              <p class="text-sm text-charcoal/70 max-w-md mx-auto">Place your first order from our menu to watch the live order tracker in action!</p>
+              <button onclick="navigateTo('menu')" class="btn-monster bg-saffron text-white font-display font-bold px-7 py-3 rounded-2xl">
+                Order Something Yummy
+              </button>
+            </div>
+          `}
+
+          <!-- Past Orders History -->
+          ${state.orders.length > 0 ? `
+            <div class="space-y-4">
+              <h2 class="font-display text-2xl sm:text-3xl font-bold text-charcoal">Order History (${state.orders.length})</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                ${state.orders.map(ord => `
+                  <div class="bg-white border-2 border-charcoal rounded-2xl p-5 shadow-monsterSm flex flex-col justify-between gap-4">
+                    <div>
+                      <div class="flex items-center justify-between">
+                        <span class="font-display font-bold text-lg text-charcoal">#${ord.id}</span>
+                        <span class="font-display font-bold text-lg text-saffron">₹${ord.totals.grandTotal}</span>
+                      </div>
+                      <p class="text-xs text-charcoal/60">${ord.dateFormatted} • ${ord.paymentMethod}</p>
+                      <p class="text-xs font-semibold text-charcoal/85 mt-2">
+                        ${ord.items.map(i => `${i.qty}x ${i.name}`).join(', ')}
+                      </p>
+                    </div>
+                    <div class="flex items-center gap-2 pt-2 border-t border-charcoal/10">
+                      <button onclick="state.activeOrderId='${ord.id}'; renderApp()" class="px-3.5 py-2 rounded-xl border-2 border-charcoal text-xs font-bold hover:bg-creamDark transition">
+                        View Receipt
+                      </button>
+                      <button onclick="reorderPastOrder('${ord.id}')" class="btn-monster bg-mustard text-charcoal font-display font-bold text-xs px-4 py-2 rounded-xl">
+                        ↻ Reorder Feast
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // -------------------- 12. MAIN RENDER LOOP & LIVE TIMER --------------------
+    function renderApp() {
+      const root = document.getElementById('app-root');
+      if (!root) return;
+
+      switch (state.currentPage) {
+        case 'home':
+          root.innerHTML = renderHomePage();
+          break;
+        case 'menu':
+          root.innerHTML = renderMenuPage();
+          break;
+        case 'deals':
+          root.innerHTML = renderDealsPage();
+          break;
+        case 'checkout':
+          root.innerHTML = renderCheckoutPage();
+          break;
+        case 'track':
+          root.innerHTML = renderTrackPage();
+          break;
+        default:
+          root.innerHTML = renderHomePage();
+      }
+      updateNavHighlight();
+    }
+
+    // Auto-refresh live tracker page every 5 seconds so stages progress organically
+    setInterval(() => {
+      if (state.currentPage === 'track' && state.orders.length > 0) {
+        renderApp();
+      }
+    }, 5000);
+
+    // Initialize Application on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      updateCartUI();
+      updateActiveOrderDot();
+      renderApp();
+    });
+  </script>
+</body>
+</html>
