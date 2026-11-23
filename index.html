@@ -38,7 +38,7 @@
       100% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; transform: translate(-25px, 35px) scale(1.12); }
     }
 
-    /* FLOATING CAPSULE NAVBAR */
+    /* FLOATING CAPSULE NAVBAR WITH LOGO.JPG */
     .nav-shell { position: sticky; top: 12px; z-index: 60; padding: 0 14px; }
     header {
       max-width: 1160px; margin: 0 auto;
@@ -56,15 +56,14 @@
       display: flex; align-items: center; gap: 11px; cursor: pointer;
       color: #fff; font-weight: 800; font-size: 1.28rem;
     }
-    .velvet-orb {
-      width: 42px; height: 42px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--gold), #9c7818);
-      color: var(--burgundy-deep);
-      display: grid; place-items: center; font-weight: 900; font-size: 0.96rem;
+    .brand-logo {
+      width: 48px; height: 48px; border-radius: 50%; object-fit: contain;
+      background: #14080b; padding: 3px; border: 1.5px solid var(--gold);
       box-shadow: 0 4px 16px rgba(212, 175, 55, 0.45);
       transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      flex-shrink: 0;
     }
-    .brand:hover .velvet-orb { transform: rotate(15deg) scale(1.1); }
+    .brand:hover .brand-logo { transform: rotate(10deg) scale(1.08); }
     .brand-sub { display: block; font-size: 0.66rem; font-weight: 700; color: var(--gold-soft); letter-spacing: 0.14em; text-transform: uppercase; }
 
     nav { display: flex; gap: 5px; flex-wrap: wrap; background: rgba(255, 255, 255, 0.08); padding: 4px; border-radius: 999px; }
@@ -237,7 +236,7 @@
     input:focus, select:focus { outline: none; border-color: var(--burgundy); background: #fff; }
     .bill-card { background: var(--tint); border: 1px solid var(--border); padding: 16px 18px; border-radius: 24px; margin-top: 12px; font-size: 0.94rem; line-height: 1.8; }
 
-    /* NEW CURVED BOTTOM-SHEET PAYMENT GATEWAY */
+    /* CURVED BOTTOM-SHEET PAYMENT GATEWAY */
     .sheet-backdrop {
       display: none; position: fixed; inset: 0;
       background: rgba(24, 3, 9, 0.78); backdrop-filter: blur(6px);
@@ -335,7 +334,7 @@
     <header>
       <div class="mast">
         <div class="brand" onclick="switchPage('home')">
-          <div class="velvet-orb">CV</div>
+          <img src="logo.jpg?v=1" alt="Café Velvet Logo" class="brand-logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2250%22 fill=%22%232b050f%22/><text x=%2250%22 y=%2260%22 font-family=%22Georgia,serif%22 font-size=%2236%22 font-weight=%22bold%22 fill=%22%23d4af37%22 text-anchor=%22middle%22>CV</text></svg>'" />
           <div>
             <span>Café Velvet</span>
             <span class="brand-sub">Roastery • Kitchen • Lounge</span>
@@ -632,7 +631,7 @@
     </section>
   </main>
 
-  <!-- REDESIGNED CURVED BOTTOM-SHEET VELVETPAY GATEWAY -->
+  <!-- CURVED BOTTOM-SHEET VELVETPAY GATEWAY -->
   <div class="sheet-backdrop" id="paySheetBackdrop" onclick="if(event.target===this) closePaymentModal()">
     <div class="curvy-sheet">
       <div class="sheet-header">
